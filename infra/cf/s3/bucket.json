@@ -1,0 +1,202 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "EnvironmentName": {
+            "Type": "String",
+            "Description": "Environment level",
+            "AllowedValues" : ["DEV", "TEST", "PROD", "MGMT"],
+            "Default": "DEV"
+        },
+        "ProjectName": {
+            "Type": "String",
+            "Description": "Human readable project name",
+            "Default": "USER_INPUT_REQUIRED"
+        },
+        "SystemNumber": {
+            "Type": "String",
+            "Description": "Internal system number",
+            "Default": "USER_INPUT_REQUIRED"
+        },
+        "BucketNamePrefix": {
+            "Type": "String",
+            "Description": "Prefix of the bucket name",
+            "Default": "base-S3Bucket"
+        },
+        "Domain": {
+            "Type": "String",
+            "Description": "Domain used to form the bucket name",
+            "Default": "example.com"
+        },
+        "BucketVersionStatus": {
+            "Type": "String",
+            "Description": "Status of S3 bucket versioning (Enabled | Suspended)",
+            "Default": "Suspended"
+        },
+        "BucketParameterName": {
+            "Type": "String",
+            "Description": "Name of the value that will be stored in AWS Parameter Store",
+            "Default": "base-S3Bucket-parameter"
+        },
+        "KMSKeyARN": {
+            "Type": "String",
+            "Description": "ARN of KMS key used to encrypt the S3Bucket bucket",
+            "Default": "NO_VALUE"
+        }
+    },
+    "Metadata" : {
+        "AWS::CloudFormation::Interface" : {
+            "ParameterGroups" : [
+                {
+                    "Label" : { "default":"S3Bucket S3 Bucket Settings" },
+                    "Parameters" : [ 
+                        "BucketName", "BucketTagValue", 
+                        "BucketTagKey", "KMSKeyARN"
+                    ]
+                }
+            ]
+        }
+    },
+    "Conditions" : {
+        "EnableVersioning" : {
+            "Fn::Equals": [
+                {"Ref": "BucketVersionStatus"},
+                "Enabled"
+            ]
+        },
+        "EnableEncryption" : {
+            "Fn::Not": [{ "Fn::Equals": [
+                {"Ref": "KMSKeyARN"},
+                "NO_VALUE"
+            ]}]
+        }
+    },
+    "Resources": {
+        "S3Bucket" : {
+            "Type" : "AWS::S3::Bucket",
+            "Properties" : {
+                "BucketName" : { "Fn::Sub": [ 
+                    "${Prefix}.${AccountID}.${Domain}", { 
+                        "Prefix": {"Ref" : "BucketNamePrefix" },
+                        "AccountID": {"Ref" : "AWS::AccountId" },
+                        "Domain": {"Ref" : "Domain" }
+                    }
+                ]},
+                "Tags" : [ 
+                    {
+                        "Key" : "environment",
+                        "Value" : { "Ref" : "EnvironmentName" }
+                    },
+                    {
+                        "Key" : "project",
+                        "Value" : { "Ref" : "ProjectName" }
+                    },
+                    {
+                        "Key" : "system_number",
+                        "Value" : { "Ref" : "SystemNumber" }
+                    }
+                ],
+                "BucketEncryption" : { "Fn::If" : 
+                    [ "EnableEncryption",
+                        {
+                            "ServerSideEncryptionConfiguration" : [{
+                                "ServerSideEncryptionByDefault" : {
+                                    "KMSMasterKeyID" : { "Ref": "KMSKeyARN" },
+                                    "SSEAlgorithm" : "aws:kms"
+                                }
+                            }]
+                        },
+                        {"Ref" : "AWS::NoValue"}
+                    ]
+                },
+                "VersioningConfiguration" : { "Fn::If" : [
+                    "EnableVersioning",
+                    {"Status" : "Enabled"},
+                    {"Ref" : "AWS::NoValue"}
+                ]}
+            },
+        },
+        "S3BucketPolicy": {
+            "Type": "AWS::S3::BucketPolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Id": "PutObjPolicy",
+                    "Statement": [
+                        {
+                            "Sid": "SecureTransport",
+                            "Effect": "Deny",
+                            "Principal": "*",
+                            "Action": "s3:*",
+                            "Resource" : {"Fn::Join" : [ "/", [ { "Fn::GetAtt": [ "S3Bucket", "Arn" ] }, "*" ] ] },
+                            "Condition": {
+                                "Bool": {
+                                    "aws:SecureTransport": "false"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "Bucket": {
+                    "Ref": "S3Bucket"
+                }
+            },
+            "DependsOn" : "S3Bucket"
+        },
+        "BucketNameParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Ref" : "BucketParameterName"},
+                "Type": "String",
+                "Value" : {"Ref" : "S3Bucket"},
+                "Description": "Name of S3 bucket",
+                "Tags": {
+                    "environment": {"Ref" : "EnvironmentName"},
+                    "project": {"Ref" : "ProjectName"},
+                    "system_number": {"Ref" : "SystemNumber"}
+                }
+            }
+        },
+        "BucketARNParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "BucketParameterName" }, "ARN" ]]},
+                "Type": "String",
+                "Value" : { "Fn::GetAtt" : [ "S3Bucket", "Arn" ] },
+                "Description": "Name of S3 bucket",
+                "Tags": {
+                    "environment": {"Ref" : "EnvironmentName"},
+                    "project": {"Ref" : "ProjectName"},
+                    "system_number": {"Ref" : "SystemNumber"}
+                }
+            }
+        },
+        "BucketRegionalDomainParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "BucketParameterName" }, "Regional-Domain" ]]},
+                "Type": "String",
+                "Value" : { "Fn::GetAtt" : [ "S3Bucket", "RegionalDomainName" ] },
+                "Description": "Name of S3 bucket",
+                "Tags": {
+                    "environment": {"Ref" : "EnvironmentName"},
+                    "project": {"Ref" : "ProjectName"},
+                    "system_number": {"Ref" : "SystemNumber"}
+                }
+            }
+        }
+    },
+    "Outputs" : {
+        "BucketARN" : {
+            "Value" : { "Fn::GetAtt" : [ "S3Bucket", "Arn" ] },
+            "Description" : "ARN of S3 Bucket"
+        },
+        "BucketName" : {
+            "Value" : { "Ref" : "S3Bucket" },
+            "Description" : "Name of S3 Bucket"
+        },    
+        "BucketRegionalDomain" : {
+            "Value" : { "Fn::GetAtt" : [ "S3Bucket", "RegionalDomainName" ] },
+            "Description" : "S3 Bucket regional domain name"
+        },    
+    }
+}
