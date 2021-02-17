@@ -39,7 +39,7 @@ To deploy the S3 staging bucket:
 
 Then run the command:
 
-    `./deploy.sh --env-file env/cf/s3_staging_bucket_env.sh`
+    ./deploy.sh --env-file env/cf/s3_staging_bucket_env.sh
 
 This will result in a new Cloudformation stack with the given name that you configured in the STACK_NAME environment variable.
 
