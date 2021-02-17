@@ -49,8 +49,10 @@
                 {
                     "Label" : { "default":"S3Bucket S3 Bucket Settings" },
                     "Parameters" : [ 
-                        "BucketName", "BucketTagValue", 
-                        "BucketTagKey", "KMSKeyARN"
+                        "EnvironmentName", "ProjectName",
+                        "SystemNumber", "BucketNamePrefix",
+                        "Domain", "BucketVersionStatus",
+                        "BucketParameterName", "KMSKeyARN"
                     ]
                 }
             ]

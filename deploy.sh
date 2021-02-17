@@ -71,7 +71,8 @@ parse_args(){
 validate_template(){
     echo "[+] $(date) - Validating CloudFormation template ... $CF_TEMPLATE_PATH"
     aws cloudformation validate-template \
-        --template-body 'file://'$CF_TEMPLATE_PATH
+        --template-body 'file://'$CF_TEMPLATE_PATH \
+        --region $REGION
 }
 
 
@@ -101,7 +102,9 @@ deploy_stack(){
         --template-body 'file://'$CF_TEMPLATE_PATH \
         --parameter 'file://'$CF_PARAM_PATH \
         --stack-name $STACK_NAME \
-        --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+        --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
+        --region $REGION
+
 }
 
 
@@ -117,7 +120,8 @@ deploy_stack(){
 wait_stack_create(){
     echo "[+] $(date) - Waiting for stack-create-complete ... $STACK_NAME"    
     aws cloudformation wait stack-create-complete \
-        --stack-name $STACK_NAME
+        --stack-name $STACK_NAME \
+        --region $REGION
 }
 
 
@@ -133,7 +137,8 @@ wait_stack_create(){
 describe_events(){
     echo "[+] $(date) - Describing stack events ... $STACK_NAME"
     aws cloudformation describe-stack-events \
-        --stack-name $STACK_NAME
+        --stack-name $STACK_NAME \
+        --region $REGION
 }
 
 
@@ -155,7 +160,6 @@ main(){
         if ! wait_stack_create; then
             echo "[-] $(date) - Stack create failed ... "
             describe_events
-
             ##
             ## this scenario leaves an orphaned failed stack 
             ## either manually teardown, or run the teardown.sh
