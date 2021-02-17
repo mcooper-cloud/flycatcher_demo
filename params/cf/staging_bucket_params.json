@@ -1,0 +1,30 @@
+[
+    {
+        "ParameterKey" : "EnvironmentName",
+        "ParameterValue" : "[ARBITRARY ENV NAME]"
+    },
+    {
+        "ParameterKey" : "S3BucketName",
+        "ParameterValue" : "[BUCKET NAME GOES HERE]"
+    },
+    {
+        "ParameterKey" : "S3BucketVersionStatus",
+        "ParameterValue" : "[ Suspended | Enabled ]"
+    },
+    {
+        "ParameterKey" : "S3BucketParameterName",
+        "ParameterValue" : "[NAME OF SSM PARAMETER WHERE BUCKET NAME IS STORED]"
+    },
+    {
+        "ParameterKey" : "KMSKeyARN",
+        "ParameterValue" : "[OPTIONAL KMS KEY ARN]"
+    },
+    {
+        "ParameterKey" : "S3BucketTagKey",
+        "ParameterValue" : "[ARBITRARY TAG NAME]"
+    },
+    {
+        "ParameterKey" : "S3BucketTagValue",
+        "ParameterValue" : "[VALUE PLACED IN ARBITRARY TAG]"
+    }
+]
