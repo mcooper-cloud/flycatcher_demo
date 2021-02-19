@@ -43,7 +43,7 @@ Additionally, this demonstration will also highlight any manual steps that need 
 
 **Step 2:** (from the developer's laptop) [Deploy an S3 Staging Bucket](./docs/s3_staging.md)
 
-**Step 3** (AWS): (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](./docs/aws_ci_cd_pipeline.md)
+**Step 3(AWS):** (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](./docs/aws_ci_cd_pipeline.md)
 
 **Step 4 (AWS):** (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
