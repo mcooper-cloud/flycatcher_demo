@@ -508,7 +508,72 @@
                 },
                 "Queues":[{"Ref":"CodeBuildStatusSQSQueue"}]
             }
+        },
+        "Auth0ClientID": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+                "Name": "Auth0ClientID",
+                "Description": "Auth0 Client ID [replace w/ correct value]",
+                "GenerateSecretString": {},
+                "Tags": [
+                    {"Key": "Environment","Value": "EnvironmentName"},
+                    {"Key": "ProjectName","Value": "ProjectName"},
+                    {"Key": "SystemNumber","Value": "SystemNumber"}
+                ]
+            }
+        },
+        "Auth0ClientSecret": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+                "Name": "Auth0ClientSecret",
+                "Description": "Auth0 Client Secret [replace w/ correct value]",
+                "GenerateSecretString": {},
+                "Tags": [
+                    {"Key": "Environment","Value": "EnvironmentName"},
+                    {"Key": "ProjectName","Value": "ProjectName"},
+                    {"Key": "SystemNumber","Value": "SystemNumber"}
+                ]
+            }
+        },
+        "Auth0ClientIDResourcePolicy": {
+            "Type": "AWS::SecretsManager::ResourcePolicy",
+            "Properties": {
+                "SecretId": {"Ref": "Auth0ClientID"},
+                "ResourcePolicy": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "*",
+                            "Action": "secretsmanager:*",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "Auth0ClientSecretResourcePolicy": {
+            "Type": "AWS::SecretsManager::ResourcePolicy",
+            "Properties": {
+                "SecretId": {"Ref": "Auth0ClientSecret"},
+                "ResourcePolicy": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "*",
+                            "Action": "secretsmanager:*",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] }
+                            }
+                        }
+                    ]
+                }
+            }
         }
+
     },
     "Outputs" : {
         "CodeBuildIAMRoleARN" : {
@@ -534,6 +599,14 @@
         "CodeBuildStatusQueueARN" : {
             "Value" : { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
             "Description" : "ARN of the CodeBuild status SQS Queue"
+        },
+        "Auth0ClientIDARN" : {
+            "Value" : { "Ref" : "Auth0ClientID" },
+            "Description" : "The ARN of the Secret containing the Auth0 client ID"
+        },
+        "Auth0ClientSecretARN" : {
+            "Value" : { "Ref" : "Auth0ClientSecret" },
+            "Description" : "The ARN of the Secret containing the Auth0 client secret"
         }
     }
 }
