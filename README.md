@@ -29,9 +29,9 @@ As a matter of best (better) practice, this demo includes some arbitrary fields 
 A note on DevOps and automation ... there is a bit of "chicken or the egg" dilemma at play here, and it plays out as such:
 
 1. This demonstration will utilize automation as much as possible to ensure that deployments are testable, standardized and repeatable
-    a. to accomplish this we will utilize pipeline tools to the greatest extent possible
-    b. however, given that we are not assuming these tools already exist, we'll need to use local development tools (I.E. the local commandline) to deploy these pipeline tools.
-    c. and the catch-22 to statement (b.) is that working from a developer's laptop can introduce human error,  non-repeatable processes and general instability.
+    - to accomplish this we will utilize pipeline tools to the greatest extent possible
+    - however, given that we are not assuming these tools already exist, we'll need to use local development tools (I.E. the local commandline) to deploy these pipeline tools.
+    - and the catch-22 to statement (b.) is that working from a developer's laptop can introduce human error,  non-repeatable processes and general instability.
 
 Now, if you're working with a large enterprise, or in an established devlopment environment, there may be pipeline tools in place that can offload this task from the developer.  If that is the case, then it is recommended that you utilize those tools, rather than working from your laptop.  
 
@@ -39,10 +39,10 @@ Regardless, this demonstration is making the assumption that the developer is wo
 
 Additionally, this demonstration will also highlight any manual steps that need to be taken (with the explicit goal of reducing these to zero)
 
-    Step 1: (implied) Clone this repo
-    Step 2: (from the developer's laptop) [Deploy an S3 Staging Bucket](docs/s3_staging.md)
-    Step 3 (AWS): (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](docs/aws_ci_cd_pipeline.md)
-    Step 4 (AWS): (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
+**Step 1:** (implied) Clone this repo
+**Step 2:** (from the developer's laptop) [Deploy an S3 Staging Bucket](./docs/s3_staging.md)
+**Step 3** (AWS): (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](./docs/aws_ci_cd_pipeline.md)
+**Step 4 (AWS):** (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
 
 # Requirements
