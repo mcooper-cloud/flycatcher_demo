@@ -103,7 +103,7 @@
             "Type": "String",
             "Description": "Name of the Github repo branch to trigger Code Pipeline",
             "Default": "master"
-        },
+        }
     },
     "Metadata" : {
         "AWS::CloudFormation::Interface" : {
@@ -125,11 +125,11 @@
                 {
                     "Label" : { "default":"CodeBuild Settings" },
                     "Parameters" : [ 
-                        "CodeBuildIAMRoleName", "CodeBuildIAMRoleParameterName"
+                        "CodeBuildIAMRoleName", "CodeBuildIAMRoleParameterName",
                         "CodeBuildLocation", "CodeBuildEnvType",
                         "CodeBuildComputeType", "CodeBuildImage",
                         "CodeBuildSpecFile", "CodeBuildTimeout",
-                        "CodeBuildType", 
+                        "CodeBuildType"
                     ]
                 },
                 {
@@ -137,7 +137,7 @@
                     "Parameters" : [ 
                         "CodePipelineIAMRoleName", 
                         "CodePipelineIAMRoleParameterName",
-                        "RepoName", "RepoBranch", 
+                        "RepoName", "RepoBranch"
                     ]
                 }
             ]
@@ -151,7 +151,7 @@
                         [
                             { "Ref":"EnvironmentName"},
                             "-",
-                            { "Ref" : "CodeBuildIAMRoleName" },
+                            { "Ref" : "CodeBuildIAMRoleName" }
                         ]
                     ]
                 },
@@ -200,7 +200,7 @@
                         [
                             { "Ref":"EnvironmentName"},
                             "-",
-                            { "Ref" : "CodePipelineIAMRoleName" },
+                            { "Ref" : "CodePipelineIAMRoleName" }
                         ]
                     ]
                 },
@@ -322,7 +322,7 @@
                 "Environment":{
                     "Type": { "Ref" : "CodeBuildEnvType" },
                     "ComputeType":{ "Ref" : "CodeBuildComputeType" },
-                    "Image":{ "Ref" : "CodeBuildImage" },
+                    "Image":{ "Ref" : "CodeBuildImage" }
                 },
                 "Source":{
                     "BuildSpec": { "Ref" : "CodeBuildSpecFile" },                    
@@ -348,11 +348,11 @@
             "Type": "AWS::CodeStarConnections::Connection",
             "Properties": {
                 "ConnectionName": "GithubConnection",
-                "ProviderType": "Github",
+                "ProviderType": "GitHub",
                 "Tags": [
                     {"Key": "Environment","Value": "EnvironmentName"},
                     {"Key": "ProjectName","Value": "ProjectName"},
-                    {"Key": "SystemNumber","Value": "SystemNumber"},
+                    {"Key": "SystemNumber","Value": "SystemNumber"}
                 ]
             }
         },
@@ -442,7 +442,7 @@
                 "Targets": [
                     {
                         "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
-                        "Id": "CodeBuild-Start-Stop-Event-Trigger",
+                        "Id": "CodeBuild-Start-Stop-Event-Trigger"
                     }
                 ]
             }
@@ -482,7 +482,7 @@
                 "Targets": [
                     {
                         "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
-                        "Id": "CodeBuild-Phase-Change-Event-Trigger",
+                        "Id": "CodeBuild-Phase-Change-Event-Trigger"
                     }
                 ]
             }
@@ -503,12 +503,12 @@
                             ]
                         },
                         "Action":["sqs:SendMessage"],
-                        "Resource": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                        "Resource": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] }
                     }]
                 },
                 "Queues":[{"Ref":"CodeBuildStatusSQSQueue"}]
             }
-        },
+        }
     },
     "Outputs" : {
         "CodeBuildIAMRoleARN" : {
@@ -535,6 +535,5 @@
             "Value" : { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
             "Description" : "ARN of the CodeBuild status SQS Queue"
         }
-    }
     }
 }
