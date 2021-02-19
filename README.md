@@ -26,22 +26,24 @@ As a matter of best (better) practice, this demo includes some arbitrary fields 
 
 # Components
 
-Some resources included in this demo may not be necessary for all use cases.
+A note on DevOps and automation ... there is a bit of "chicken or the egg" dilemma at play here, and it plays out as such:
 
-## S3 Staging Bucket
+1. This demonstration will utilize automation as much as possible to ensure that deployments are testable, standardized and repeatable
+    a. to accomplish this we will utilize pipeline tools to the greatest extent possible
+    b. however, given that we are not assuming these tools already exist, we'll need to use local development tools (I.E. the local commandline) to deploy these pipeline tools.
+    c. and the catch-22 to statement (b.) is that working from a developer's laptop can introduce human error,  non-repeatable processes and general instability.
 
-This resource is provisioned for the purpose of general storage such as build & application logs, source code staging, application output and many other uses.
+Now, if you're working with a large enterprise, or in an established devlopment environment, there may be pipeline tools in place that can offload this task from the developer.  If that is the case, then it is recommended that you utilize those tools, rather than working from your laptop.  
 
-To deploy the S3 staging bucket:
+Regardless, this demonstration is making the assumption that the developer is working from a pritine environment, and has none of those tools available.  For that reason, the first 2 stages will be accomplished from the developer's laptop.  After that, pipeline tools take over.
 
-1. customize `env/cf/s3_staging_bucket_env.sh`
-2. customize `params/cf/s3_staging_bucket_params.json`
+Additionally, this demonstration will also highlight any manual steps that need to be taken (with the explicit goal of reducing these to zero)
 
-Then run the command:
+    Step 1: (implied) Clone this repo
+    Step 2: (from the developer's laptop) [Deploy an S3 Staging Bucket](docs/s3_staging.md)
+    Step 3 (AWS): (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](docs/aws_ci_cd_pipeline.md)
+    Step 4 (AWS): (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
-    ./deploy.sh --env-file env/cf/s3_staging_bucket_env.sh
-
-This will result in a new Cloudformation stack with the given name that you configured in the STACK_NAME environment variable.
 
 # Requirements
 
