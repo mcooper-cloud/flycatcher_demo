@@ -1,0 +1,540 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "EnvironmentName": {
+            "Type": "String",
+            "Description": "Environment level of the deployment pipeline",
+            "Default": "DEV"
+        },
+        "ProjectName": {
+            "Type": "String",
+            "Description": "Human readable project name",
+            "Default": "USER_INPUT_REQUIRED"
+        },
+        "ProjectDescription": {
+            "Type": "String",
+            "Description": "Human readable project description",
+            "Default": "USER_INPUT_REQUIRED"
+        },
+        "SystemNumber": {
+            "Type": "String",
+            "Description": "Internal system number",
+            "Default": "USER_INPUT_REQUIRED"
+        },
+        "CodeBuildIAMRoleName": {
+            "Type": "String",
+            "Description": "CodeBuild IAM role name",
+            "Default": "CodeBuildIAMRole"
+        },
+        "CodeBuildIAMRoleParameterName": {
+            "Type": "String",
+            "Description": "CodeBuild IAM role name",
+            "Default": "CodeBuildIAMRoleParameter"
+        },
+        "CodePipelineIAMRoleName": {
+            "Type": "String",
+            "Description": "Pipeline IAM role name",
+            "Default": "CodePipelineIAMRole"
+        },
+        "CodePipelineIAMRoleParameterName": {
+            "Type": "String",
+            "Description": "Pipeline IAM role name",
+            "Default": "CodePipelineIAMRoleParameter"
+        },
+        "ArtifactBucketName": {
+            "Type": "String",
+            "Description": "Name of the bucket where pipeline artifacts will be stored",
+            "Default": "test-pipeline-artifact"
+        },
+        "ArtifactBucketPath": {
+            "Type": "String",
+            "Description": "Path where build artifact will be stored",
+            "Default": "test-pipeline-artifact-path"
+        },
+        "ArtifactZipFileName": {
+            "Type": "String",
+            "Description": "Name of zip file stored in the artifact bucket",
+            "Default": "test-pipeline-artifact.zip"
+        },
+        "CodeBuildLocation": {
+            "Type": "String",
+            "Description": "HTTP URL for cloning CodeCommit repo",
+            "Default": "[ CodeCommit URL here ]"
+        },
+        "CodeBuildEnvType" : {
+            "Type" : "String",
+            "Default" : "LINUX_CONTAINER",
+            "AllowedValues" : ["LINUX_CONTAINER","WINDOWS_CONTAINER"],
+            "Description" : "CodeBuild environment type"
+        },
+        "CodeBuildComputeType" : {
+            "Type" : "String",
+            "Default" : "BUILD_GENERAL1_SMALL",
+            "AllowedValues" : ["BUILD_GENERAL1_SMALL", "BUILD_GENERAL1_MEDIUM","BUILD_GENERAL1_LARGE"],
+            "Description" : "CodeBuild compute type"
+        },
+        "CodeBuildImage" : {
+            "Type" : "String",
+            "Default" : "aws/codebuild/standard:1.0",
+            "Description" : "CodeBuild container image"
+        },
+        "CodeBuildSpecFile" : {
+            "Type" : "String",
+            "Default" : "buildspec/stage_1_prebuild.yml",
+            "Description" : "CodeBuild compute type"
+        },
+        "CodeBuildTimeout" : {
+            "Type" : "Number",
+            "Default" : "10",
+            "Description" : "CodeBuild  timeout value"
+        },
+        "CodeBuildSourceType": {
+            "Type": "String",
+            "Description": "Type of the CodeBuild project [ CODECOMMIT | S3 | GITHUB ]",
+            "AllowedValues" : ["CODECOMMIT", "S3", "GITHUB"],
+            "Default": "GITHUB"
+        },
+        "RepoName": {
+            "Type": "String",
+            "Description": "Name of the Github repo including owner [ower/name]",
+            "Default": "example/repo"
+        },
+        "RepoBranch": {
+            "Type": "String",
+            "Description": "Name of the Github repo branch to trigger Code Pipeline",
+            "Default": "master"
+        },
+    },
+    "Metadata" : {
+        "AWS::CloudFormation::Interface" : {
+            "ParameterGroups" : [
+                {
+                    "Label" : { "default":"General Settings" },
+                    "Parameters" : [ 
+                        "EnvironmentName", "ProjectName",
+                        "SystemNumber"
+                    ]
+                },
+                {
+                    "Label" : { "default":"S3 Storage Settings" },
+                    "Parameters" : [ 
+                        "ArtifactBucketName", "ArtifactBucketPath",
+                        "ArtifactZipFileName"
+                    ]
+                },
+                {
+                    "Label" : { "default":"CodeBuild Settings" },
+                    "Parameters" : [ 
+                        "CodeBuildIAMRoleName", "CodeBuildIAMRoleParameterName"
+                        "CodeBuildLocation", "CodeBuildEnvType",
+                        "CodeBuildComputeType", "CodeBuildImage",
+                        "CodeBuildSpecFile", "CodeBuildTimeout",
+                        "CodeBuildType", 
+                    ]
+                },
+                {
+                    "Label" : { "default":"CodePipeline Settings" },
+                    "Parameters" : [ 
+                        "CodePipelineIAMRoleName", 
+                        "CodePipelineIAMRoleParameterName",
+                        "RepoName", "RepoBranch", 
+                    ]
+                }
+            ]
+        }
+    },
+    "Resources": {
+        "CodeBuildIAMRole":{
+            "Type":"AWS::IAM::Role",
+            "Properties":{
+                "RoleName" : { "Fn::Join" : [ "", 
+                        [
+                            { "Ref":"EnvironmentName"},
+                            "-",
+                            { "Ref" : "CodeBuildIAMRoleName" },
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument":{
+                    "Statement":[{
+                        "Effect":"Allow",
+                        "Principal":{"Service":["codebuild.amazonaws.com"]},
+                        "Action":[
+                            "sts:AssumeRole"
+                        ]
+                    }]
+                },
+                "Path":"/",
+                "Policies":[{
+                    "PolicyName":"codebuild-service",
+                    "PolicyDocument":{
+                        "Statement":[{
+                            "Effect":"Allow",
+                            "Action":"*",
+                            "Resource":"*"
+                        }],
+                        "Version":"2012-10-17"
+                    }
+                }]
+            }
+        },
+        "CodeBuildIAMRoleARN": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "CodeBuildIAMRoleParameterName" }, "ARN" ]]},
+                "Type": "String",
+                "Value": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
+                "Description": "ARN for CodeBuild IAM role",
+                "Tags": {
+                    "Environment": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
+                }
+            }
+        },
+        "CodePipelineIAMRole":{
+            "Type":"AWS::IAM::Role",
+            "Properties":{
+                "RoleName" : { 
+                    "Fn::Join" : [ "", 
+                        [
+                            { "Ref":"EnvironmentName"},
+                            "-",
+                            { "Ref" : "CodePipelineIAMRoleName" },
+                        ]
+                    ]
+                },
+                "AssumeRolePolicyDocument":{
+                    "Statement":[{
+                        "Effect":"Allow",
+                        "Principal":{"Service":["codepipeline.amazonaws.com"]},
+                        "Action":["sts:AssumeRole"]
+                    }]
+                },
+                "Path":"/",
+                "Policies":[{
+                    "PolicyName":"codepipeline-service-policy",
+                    "PolicyDocument":{
+                        "Statement":[
+                            {
+                                "Action":[
+                                    "codecommit:GetBranch",
+                                    "codecommit:GetCommit",
+                                    "codecommit:UploadArchive",
+                                    "codecommit:GetUploadArchiveStatus",
+                                    "codecommit:CancelUploadArchive"
+                                ],
+                                "Resource":"*",
+                                "Effect":"Allow"
+                            },{
+                                "Action":[
+                                    "s3:GetObject",
+                                    "s3:GetObjectVersion",
+                                    "s3:GetBucketVersioning"
+                                ],
+                                "Resource":"*",
+                                "Effect":"Allow"
+                            },{
+                                "Action":[
+                                    "codedeploy:CreateDeployment",
+                                    "codedeploy:GetApplicationRevision",
+                                    "codedeploy:GetDeployment",
+                                    "codedeploy:GetDeploymentConfig",
+                                    "codedeploy:RegisterApplicationRevision"
+                                ],
+                                "Resource":"*",
+                                "Effect":"Allow"
+                            },{
+                                "Action":[
+                                    "elasticbeanstalk:*",
+                                    "ec2:*",
+                                    "elasticloadbalancing:*",
+                                    "autoscaling:*",
+                                    "cloudwatch:*",
+                                    "s3:*",
+                                    "sns:*",
+                                    "cloudformation:*",
+                                    "rds:*",
+                                    "sqs:*",
+                                    "ecs:*",
+                                    "codebuild:*",
+                                    "iam:PassRole",
+                                    "codestar-connections:UseConnection"
+                                ],
+                                "Resource":"*",
+                                "Effect":"Allow"
+                            },{
+                                "Action":[
+                                    "lambda:InvokeFunction",
+                                    "lambda:ListFunctions"
+                                ],
+                                "Resource":"*",
+                                "Effect":"Allow"
+                            }
+                        ],
+                        "Version":"2012-10-17"
+                    }
+                }]
+            }
+        },
+        "CodePipelineRoleARN": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "CodePipelineIAMRoleParameterName" }, "ARN" ]]},
+                "Type": "String",
+                "Value" : { "Fn::GetAtt" : [ "CodePipelineIAMRole", "Arn" ] },
+                "Description": "ARN for CodePipeline IAM Role",
+                "Tags": {
+                    "Environment": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
+                }
+            }
+        },
+        "CodeBuildLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+                "LogGroupName": {"Fn::Sub":"/aws/codebuild/${ProjectName}"},
+                "RetentionInDays" : "365"
+            }
+        },
+        "CodeBuildProject":{
+            "Type":"AWS::CodeBuild::Project",
+            "Properties":{
+                "Name": { 
+                    "Fn::Join" : [ "", 
+                        [
+                            { "Ref":"ProjectName"},
+                            "-CodeBuildProject"
+                        ]
+                    ]
+                },
+                "Description":{ "Ref":"ProjectDescription"},
+                "ServiceRole": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
+                "Artifacts":{
+                    "Type":"S3",
+                    "Location" : { "Ref" : "ArtifactBucketName" },
+                    "Path" : { "Ref" : "ArtifactBucketPath" },
+                    "NamespaceType" : "BUILD_ID",
+                    "Name" : { "Ref" : "ArtifactZipFileName" },
+                    "Packaging" : "ZIP"
+                },
+                "Environment":{
+                    "Type": { "Ref" : "CodeBuildEnvType" },
+                    "ComputeType":{ "Ref" : "CodeBuildComputeType" },
+                    "Image":{ "Ref" : "CodeBuildImage" },
+                },
+                "Source":{
+                    "BuildSpec": { "Ref" : "CodeBuildSpecFile" },                    
+                    "Location":{ "Ref" : "CodeBuildLocation" },
+                    "Type":{ "Ref" : "CodeBuildSourceType" }
+                },
+                "TimeoutInMinutes":{ "Ref" : "CodeBuildTimeout" },
+                "LogsConfig" : {
+                    "S3Logs" : {
+                        "Location" : { "Fn::Join" : [ "",
+                            [
+                                "arn:aws:s3:::",
+                                { "Ref" : "ArtifactBucketName" },
+                                "/codebuild-log"
+                            ]
+                        ]},
+                        "Status" : "ENABLED"
+                    }
+                }
+            }
+        },
+        "GithubConnection": {
+            "Type": "AWS::CodeStarConnections::Connection",
+            "Properties": {
+                "ConnectionName": "GithubConnection",
+                "ProviderType": "Github",
+                "Tags": [
+                    {"Key": "Environment","Value": "EnvironmentName"},
+                    {"Key": "ProjectName","Value": "ProjectName"},
+                    {"Key": "SystemNumber","Value": "SystemNumber"},
+                ]
+            }
+        },
+        "CodePipelineStack":{
+            "Type":"AWS::CodePipeline::Pipeline",
+            "Properties":{
+                "RoleArn": { "Fn::GetAtt" : [ "CodePipelineIAMRole", "Arn" ] },
+                "Name": { 
+                    "Fn::Join" : [ "", 
+                        [
+                            { "Ref":"ProjectName"},
+                            "-CodePipeline"
+                        ]
+                    ]
+                },
+                "Stages":[
+                    {
+                        "Name":"Source",
+                        "Actions":[{
+                            "InputArtifacts":[],
+                            "Name":"Source",
+                            "ActionTypeId":{
+                                "Category": "Source",
+                                "Owner": "AWS",
+                                "Version": "1",
+                                "Provider": "CodeStarSourceConnection"
+                            },
+                            "OutputArtifacts": [{"Name":"TemplateArtifact"}],
+                            "Configuration": {
+                                "ConnectionArn": { "Ref" : "GithubConnection" },
+                                "FullRepositoryId": { "Ref" : "RepoName" },
+                                "BranchName": { "Ref" : "RepoBranch" },
+                                "OutputArtifactFormat": "CODE_ZIP"
+                            },
+                            "RunOrder":1
+                        }]
+                    },
+                    {
+                        "Name":"BuildStage",
+                        "Actions":[
+                            {
+                                "InputArtifacts":[{"Name":"TemplateArtifact"}],
+                                "Name":"Stage1PreBuild",
+                                "ActionTypeId":{
+                                    "Category":"Build",
+                                    "Owner":"AWS",
+                                    "Version":"1",
+                                    "Provider":"CodeBuild"
+                                },
+                                "OutputArtifacts":[{"Name":"BuildArtifact"}],
+                                "Configuration":{
+                                    "ProjectName":{"Ref":"CodeBuildProject"}
+                                },
+                                "RunOrder":1
+                            }
+                        ]
+                    }
+                ],
+                "ArtifactStore":{
+                    "Type":"S3",
+                    "Location":{"Ref" : "ArtifactBucketName"}
+                }
+            }
+        },
+        "CodeBuildStatusSQSQueue":{
+            "Type":"AWS::SQS::Queue"
+        },
+        "CodeBuildStartStopCloudWatchEventRule": {
+            "Type": "AWS::Events::Rule",
+            "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
+            "Properties": {
+                "EventPattern": {
+                    "source": [ "aws.codebuild" ], 
+                    "detail-type": [ "CodeBuild Build State Change" ],
+                    "detail": {
+                        "build-status": [
+                            "IN_PROGRESS",
+                            "SUCCEEDED", 
+                            "FAILED",
+                            "STOPPED" 
+                        ],
+                        "project-name": [
+                            {"Ref":"CodeBuildProject"}
+                        ]
+                    }
+                },
+                "Targets": [
+                    {
+                        "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                        "Id": "CodeBuild-Start-Stop-Event-Trigger",
+                    }
+                ]
+            }
+        },
+        "CodeBuildPhaseChangeCloudWatchEventRule": {
+            "Type": "AWS::Events::Rule",
+            "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
+            "Properties": {
+                "EventPattern": {
+                    "source": [ "aws.codebuild" ], 
+                    "detail-type": [ "CodeBuild Build Phase Change" ],
+                    "detail": {
+                        "completed-phase": [
+                            "SUBMITTED",
+                            "PROVISIONING",
+                            "DOWNLOAD_SOURCE",
+                            "INSTALL",
+                            "PRE_BUILD",
+                            "BUILD",
+                            "POST_BUILD",
+                            "UPLOAD_ARTIFACTS",
+                            "FINALIZING"
+                        ],
+                        "completed-phase-status": [
+                            "TIMED_OUT",
+                            "STOPPED",
+                            "FAILED", 
+                            "SUCCEEDED",
+                            "FAULT",
+                            "CLIENT_ERROR"
+                        ],
+                        "project-name": [
+                            {"Ref":"CodeBuildProject"}
+                        ]
+                    }
+                },
+                "Targets": [
+                    {
+                        "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                        "Id": "CodeBuild-Phase-Change-Event-Trigger",
+                    }
+                ]
+            }
+        },
+        "CodeBuildStatusSQSQueuePolicy":{
+            "Type":"AWS::SQS::QueuePolicy",
+            "Properties":{
+                "PolicyDocument":{
+                    "Version":"2012-10-17",
+                    "Id":"CodeCommitQueuePolicy",
+                    "Statement":[{
+                        "Sid":"Allow-CloudWatch-CodeBuild-Status",
+                        "Effect":"Allow",
+                        "Principal":{
+                            "Service" : [
+                                "events.amazonaws.com",
+                                "sqs.amazonaws.com"
+                            ]
+                        },
+                        "Action":["sqs:SendMessage"],
+                        "Resource": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                    }]
+                },
+                "Queues":[{"Ref":"CodeBuildStatusSQSQueue"}]
+            }
+        },
+    },
+    "Outputs" : {
+        "CodeBuildIAMRoleARN" : {
+            "Value" : { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
+            "Description" : "ARN for CodeBuild IAM role "
+        },
+        "CodePipelineRoleARN" : {
+            "Value" : { "Fn::GetAtt" : [ "CodePipelineIAMRole", "Arn" ] },
+            "Description" : "ARN for CodePipeline IAM role "
+        },
+        "CodeBuildProjectName" : {
+            "Value" : { "Ref" : "CodeBuildProject" },
+            "Description" : "Name of CodeBuild Project"
+        },
+        "CodePipelineName" : {
+            "Value" : { "Ref" : "CodePipelineStack" },
+            "Description" : "Name of the CodePipeline stack"
+        },
+        "CodePipelineVersion" : {
+            "Value" : { "Fn::GetAtt" : [ "CodePipelineStack", "Version" ] },
+            "Description" : "CodePipeline version"
+        },
+        "CodeBuildStatusQueueARN" : {
+            "Value" : { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+            "Description" : "ARN of the CodeBuild status SQS Queue"
+        }
+    }
+    }
+}

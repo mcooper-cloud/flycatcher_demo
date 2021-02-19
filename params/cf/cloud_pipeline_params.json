@@ -1,0 +1,85 @@
+[
+    {
+        "ParameterKey" : "EnvironmentName",
+        "ParameterValue" : "[ARBITRARY ENV NAME]"
+    },
+    {
+        "ParameterKey" : "ProjectName",
+        "ParameterValue" : "[ARBITRARY PROJECT NAME]"
+    },
+    {
+        "ParameterKey" : "SystemNumber",
+        "ParameterValue" : "[ARBITRARY SYSTEM NUMBER]"
+    },
+    {
+        "ParameterKey" : "CodeBuildIAMRoleName",
+        "ParameterValue" : "[NAME OF THE CODEBUILD IAM ROLE]"
+    },
+    {
+        "ParameterKey" : "CodeBuildIAMRoleParameterName",
+        "ParameterValue" : "[NAME OF THE CODEBUILD IAM ROLE SSM PARAMETER]"
+    },
+    {
+        "ParameterKey" : "CodePipelineIAMRoleName",
+        "ParameterValue" : "[NAME OF THE CODEPIPELINE IAM ROLE]"
+    },
+    {
+        "ParameterKey" : "CodePipelineIAMRoleParameterName",
+        "ParameterValue" : "[NAME OF THE CODEPIPELINE IAM ROLE SSM PARAMETER]"
+    },
+    {
+        "ParameterKey" : "CodeBuildLocation",
+        "ParameterValue" : "[HTTPS CLONE URL FOR THE GITHUB REPOSITORY]"
+    },
+    {
+        "ParameterKey" : "ArtifactBucketName",
+        "ParameterValue" : "[S3 BUCKET WHERE ARTIFACTS WILL BE STORED]"
+    },
+    {
+        "ParameterKey" : "ArtifactBucketPath",
+        "ParameterValue" : "[S3 PATH WHERE ARTIFACTS WILL BE STORED]"
+    },
+    {
+        "ParameterKey" : "ArtifactZipFileName",
+        "ParameterValue" : "[NAME OF THE ARTIFACT ZIP FILE]"
+    },
+    {
+        "ParameterKey" : "CodeBuildEnvType",
+        "ParameterValue" : "[TYPE OF CODEBUILD ENV]"
+    },
+    {
+        "ParameterKey" : "CodeBuildComputeType",
+        "ParameterValue" : "[COMPUTE TYPE OF CODEBUILD ENV]"
+    },
+    {
+        "ParameterKey" : "CodeBuildImage",
+        "ParameterValue" : "[CODEBUILD IMAGE URI]"
+    },
+    {
+        "ParameterKey" : "CodeBuildSpecFile",
+        "ParameterValue" : "[PATH WITHIN THE SOURCE CODE REPO WHERE BUILDSPEC IS FOUND]"
+    },
+    {
+        "ParameterKey" : "CodeBuildTimeout",
+        "ParameterValue" : "[PROJECT TIMEOUT]"
+    },
+    {
+        "ParameterKey" : "CodeBuildType",
+        "ParameterValue" : "[CODEBUILD SOURCE TYPE]"
+    },
+    {
+        "ParameterKey" : "RepoName",
+        "ParameterValue" : "[NAME OF THE GITHUB REPO INCLUDING THE OWNER]"
+    },
+    {
+        "ParameterKey" : "RepoBranch",
+        "ParameterValue" : "[GITHUB REPO BRANCH]"
+    }
+]
+
+
+
+
+
+
+
