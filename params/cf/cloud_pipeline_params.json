@@ -13,19 +13,19 @@
     },
     {
         "ParameterKey" : "CodeBuildIAMRoleName",
-        "ParameterValue" : "[NAME OF THE CODEBUILD IAM ROLE]"
+        "ParameterValue" : "flycatcher-codebuild"
     },
     {
         "ParameterKey" : "CodeBuildIAMRoleParameterName",
-        "ParameterValue" : "[NAME OF THE CODEBUILD IAM ROLE SSM PARAMETER]"
+        "ParameterValue" : "flycatcher-codebuild-role-arn"
     },
     {
         "ParameterKey" : "CodePipelineIAMRoleName",
-        "ParameterValue" : "[NAME OF THE CODEPIPELINE IAM ROLE]"
+        "ParameterValue" : "flycather-codepipeline"
     },
     {
         "ParameterKey" : "CodePipelineIAMRoleParameterName",
-        "ParameterValue" : "[NAME OF THE CODEPIPELINE IAM ROLE SSM PARAMETER]"
+        "ParameterValue" : "flycatcher-codepipeline-role-arn"
     },
     {
         "ParameterKey" : "CodeBuildLocation",
@@ -37,35 +37,35 @@
     },
     {
         "ParameterKey" : "ArtifactBucketPath",
-        "ParameterValue" : "[S3 PATH WHERE ARTIFACTS WILL BE STORED]"
+        "ParameterValue" : "build_artifacts"
     },
     {
         "ParameterKey" : "ArtifactZipFileName",
-        "ParameterValue" : "[NAME OF THE ARTIFACT ZIP FILE]"
+        "ParameterValue" : "build_artifacts.zip"
     },
     {
         "ParameterKey" : "CodeBuildEnvType",
-        "ParameterValue" : "[TYPE OF CODEBUILD ENV]"
+        "ParameterValue" : "LINUX_CONTAINER"
     },
     {
         "ParameterKey" : "CodeBuildComputeType",
-        "ParameterValue" : "[COMPUTE TYPE OF CODEBUILD ENV]"
+        "ParameterValue" : "BUILD_GENERAL1_SMALL"
     },
     {
         "ParameterKey" : "CodeBuildImage",
-        "ParameterValue" : "[CODEBUILD IMAGE URI]"
+        "ParameterValue" : "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
     },
     {
         "ParameterKey" : "CodeBuildSpecFile",
-        "ParameterValue" : "[PATH WITHIN THE SOURCE CODE REPO WHERE BUILDSPEC IS FOUND]"
+        "ParameterValue" : "pipeline/buildspec.yml"
     },
     {
         "ParameterKey" : "CodeBuildTimeout",
-        "ParameterValue" : "[PROJECT TIMEOUT]"
+        "ParameterValue" : "20"
     },
     {
         "ParameterKey" : "CodeBuildType",
-        "ParameterValue" : "[CODEBUILD SOURCE TYPE]"
+        "ParameterValue" : "GITHUB"
     },
     {
         "ParameterKey" : "RepoName",
@@ -73,7 +73,7 @@
     },
     {
         "ParameterKey" : "RepoBranch",
-        "ParameterValue" : "[GITHUB REPO BRANCH]"
+        "ParameterValue" : "master"
     }
 ]
 
