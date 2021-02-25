@@ -49,13 +49,13 @@ Additionally, this demonstration will also highlight any manual steps that need 
 
 ![Update the CodeStar Connection Status](./mov/authorize_github_connection.webp)
 
-**Step 4 (Auth0):** (manual process) [Create a new Auth0 Tenant](https://auth0.com/docs/get-started/learn-the-basics)
+**Step 5 (Auth0):** (manual process) [Create a new Auth0 Tenant](https://auth0.com/docs/get-started/learn-the-basics)
 
-**Step 5 (Auth0):** (manual process) [Install the Auth0 Deployment CLI Extension](https://auth0.com/docs/extensions/deploy-cli-tool)
+**Step 6 (Auth0):** (manual process) [Install the Auth0 Deployment CLI Extension](https://auth0.com/docs/extensions/deploy-cli-tool)
 
 ![Install Auth0 Deployment CLI Extension](./mov/install_deploy_cli_extension.webp)
 
-**Step 6 (AWS):** (manual process) Configure Auth0 Secrets
+**Step 7 (AWS):** (manual process) Configure Auth0 Secrets
 
 Using AWS Secrets Manager, copy and paste your Auth0 ClientID and ClientSecret into the secrets that were create in step 3
 
