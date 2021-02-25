@@ -55,6 +55,13 @@ Additionally, this demonstration will also highlight any manual steps that need 
 
 ![Install Auth0 Deployment CLI Extension](./mov/install_deploy_cli_extension.webp)
 
+**Step 6 (AWS):** (manual process) Configure Auth0 Secrets
+
+Using AWS Secrets Manager, copy and paste your Auth0 ClientID and ClientSecret into the secrets that were create in step 3
+
+![Configure Auth0 Secrets](./mov/aws_configure_auth0_secrets.webp)
+
+
 # Requirements
 
 1. AWS Account: [Sign Up for AWS](https://portal.aws.amazon.com/billing/signup#/start)
