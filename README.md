@@ -47,6 +47,13 @@ Additionally, this demonstration will also highlight any manual steps that need 
 
 **Step 4 (AWS):** (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
+![Update the CodeStar Connection Status](./mov/authorize_github_connection.webp)
+
+**Step 4 (Auth0):** (manual process) [Create a new Auth0 Tenant](https://auth0.com/docs/get-started/learn-the-basics)
+
+**Step 5 (Auth0):** (manual process) [Install the Auth0 Deployment CLI Extension](https://auth0.com/docs/extensions/deploy-cli-tool)
+
+![Install Auth0 Deployment CLI Extension](./mov/install_deploy_cli_extension.webp)
 
 # Requirements
 
