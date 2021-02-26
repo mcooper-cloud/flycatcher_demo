@@ -1,4 +1,6 @@
-import { deploy, dump } from 'auth0-deploy-cli';
+
+//import { deploy, dump } from 'auth0-deploy-cli';
+import { deploy, export } from 'auth0-deploy-cli';
 
 const config = {
     AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
