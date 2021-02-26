@@ -38,7 +38,8 @@ get_secrets_params(){
 auth0_deploy(){
     cd $AUTH0_DEPLOY_PATH
 #    npm install
-    npm start config.js
+#    npm start 
+    node config.js
 }
 
 get_cf_outputs
