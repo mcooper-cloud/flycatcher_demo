@@ -24,17 +24,23 @@ get_cf_outputs(){
 
 }
 
+get_secrets_params(){
+    get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
+    echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
+
+    get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
+    echo "[+] Auth0 Client Secret: ******"
+
+    get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
+    echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
+}
+
+auth0_deploy(){
+    cd $AUTH0_DEPLOY_PATH
+    npm install
+    npm start
+}
+
 get_cf_outputs
-
-get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
-echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
-
-get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
-echo "[+] Auth0 Client Secret: ******"
-
-get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
-echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
-
-#cd $AUTH0_DEPLOY_PATH
-#npm install
-#npm start
+get_secrets_params
+auth0_deploy
