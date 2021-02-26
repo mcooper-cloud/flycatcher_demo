@@ -27,6 +27,7 @@ function get_secret(){
 function get_parameter(){
     local __returnvar=$2
     local value=$(aws ssm get-parameter --name $1 --query Parameter.Value --output text)
+    echo $value
     eval $__returnvar="${value}"
 }
 
