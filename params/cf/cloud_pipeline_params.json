@@ -12,6 +12,10 @@
         "ParameterValue" : "[ARBITRARY SYSTEM NUMBER]"
     },
     {
+        "ParameterKey" : "Auth0Domain",
+        "ParameterValue" : "example.auth0.com"
+    },
+    {
         "ParameterKey" : "CodeBuildIAMRoleName",
         "ParameterValue" : "flycatcher-codebuild"
     },

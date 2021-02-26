@@ -21,6 +21,11 @@
             "Description": "Internal system number",
             "Default": "USER_INPUT_REQUIRED"
         },
+        "Auth0Domain": {
+            "Type": "String",
+            "Description": "Auth0 Tenant Domain",
+            "Default": "example.auth0.com"
+        },
         "CodeBuildIAMRoleName": {
             "Type": "String",
             "Description": "CodeBuild IAM role name",
@@ -512,7 +517,7 @@
         "Auth0ClientID": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
-                "Name": "Auth0ClientID",
+                "Name" : {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0ClientID" ]]},
                 "Description": "Auth0 Client ID [replace w/ correct value]",
                 "GenerateSecretString": {},
                 "Tags": [
@@ -525,7 +530,7 @@
         "Auth0ClientSecret": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
-                "Name": "Auth0ClientSecret",
+                "Name" : {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0ClientSecret" ]]},
                 "Description": "Auth0 Client Secret [replace w/ correct value]",
                 "GenerateSecretString": {},
                 "Tags": [
@@ -572,6 +577,20 @@
                     ]
                 }
             }
+        },
+        "Auth0DomainParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0Domain" ]]},
+                "Type": "String",
+                "Value" : {"Ref" : "Auth0Domain"},
+                "Description": "Auth0 Domain",
+                "Tags": {
+                    "environment": {"Ref" : "EnvironmentName"},
+                    "project": {"Ref" : "ProjectName"},
+                    "system_number": {"Ref" : "SystemNumber"}
+                }
+            }
         }
     },
     "Outputs" : {
@@ -606,6 +625,10 @@
         "Auth0ClientSecretARN" : {
             "Value" : { "Ref" : "Auth0ClientSecret" },
             "Description" : "The ARN of the Secret containing the Auth0 client secret"
+        },
+        "Auth0DomainParam" : {
+            "Value" : { "Ref" : "Auth0DomainParam" },
+            "Description" : "The name of the SSM Param holding the Auth0 domain"
         }
     }
 }
