@@ -21,6 +21,8 @@ CF_JSON=$(
 
 jq
 
-AUTH0_CLIENT_ID_SM=$(echo $CF_JSON | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ')
+echo ${CF_JSON} | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue '
+
+AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ')
 echo $AUTH0_CLIENT_ID_SM
 
