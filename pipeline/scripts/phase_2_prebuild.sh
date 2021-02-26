@@ -6,18 +6,24 @@ echo "[+] $(date) - Entered STAGE 1 PREBUILD - phase 2 prebuild"
 ENV_SH_PATH=$CODEBUILD_SRC_DIR/$ENV_PATH/$ENV_SH
 source $ENV_SH_PATH
 
-CF_JSON=$(
-    aws cloudformation describe-stacks \
-        --stack-name ${STACK_NAME}  \
-        --query "Stacks[0].Outputs" \
-        --output json
-)
 
-AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-echo $AUTH0_CLIENT_ID_SM
+get_cf_outputs(){
+    export CF_JSON=$(
+        aws cloudformation describe-stacks \
+            --stack-name ${STACK_NAME}  \
+            --query "Stacks[0].Outputs" \
+            --output json
+    )
 
-AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-echo $AUTH0_CLIENT_SECRET_SM
+    echo "[+] Cloudformation outputs"
+    echo ${CF_JSON} | jq -rc '.[]'
 
-AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-echo $AUTH0_DOMAIN_PARAM
+    export AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+}
+
+get_cf_outputs
+get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
+echo $AUTH0_CLIENT_ID
