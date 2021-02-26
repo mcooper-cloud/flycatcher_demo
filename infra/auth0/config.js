@@ -1,6 +1,7 @@
 
 //import { deploy, dump } from 'auth0-deploy-cli';
-import { deploy, export } from 'auth0-deploy-cli';
+import { deploy } from 'auth0-deploy-cli';
+
 
 const config = {
     AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
@@ -10,7 +11,6 @@ const config = {
     AUTH0_ALLOW_DELETE: true,
     AUTH0_API_MAX_RETRIES: 10
 };
-
 
 
 //############################################################################
