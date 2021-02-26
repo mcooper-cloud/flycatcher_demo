@@ -15,6 +15,7 @@ export_env(){
     export AUTH0_CLIENT_ID_OUTPUT="Auth0ClientIDARN"
     export AUTH0_CLIENT_SECRET_OUTPUT="Auth0ClientSecretARN"
     export AUTH0_DOMAIN_PARAM_OUTPUT="Auth0DomainParam"
+    export AUTH0_DEPLOY_PATH=infra/auth0
 
 }
 
