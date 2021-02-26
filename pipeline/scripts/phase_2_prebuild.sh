@@ -37,6 +37,10 @@ get_secrets_params(){
 
 auth0_deploy(){
     cd $AUTH0_DEPLOY_PATH
+
+    echo "[+] Node version $(node --version)"
+    echo "[+] NPM version $(npm --version)"
+
     npm install
     npm start 
 }
