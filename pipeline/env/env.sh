@@ -21,13 +21,13 @@ export_env(){
 function get_secret(){
     local __returnvar=$2
     local value=$(aws secretsmanager get-secret-value --secret-id $1 --query SecretString --output text)
+    echo $value
     eval $__returnvar="'$value'"
 }
 
 function get_parameter(){
     local __returnvar=$2
     local value=$(aws ssm get-parameter --name $1 --query Parameter.Value --output text)
-    echo $value
     eval $__returnvar="${value}"
 }
 
