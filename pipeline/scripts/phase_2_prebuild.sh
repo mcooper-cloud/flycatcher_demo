@@ -21,10 +21,11 @@ echo $AUTH0_DOMAIN_PARAM_OUTPUT
 
 jq
 
+#echo ${CF_JSON} | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue '
+#AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ')
 
-echo ${CF_JSON} | jq -Rrc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue '
-
-AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ')
+jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ' <<< ${CF_JSON}
+AUTH0_CLIENT_ID_SM=$(jq -rc '.[] | select(.OutputKey=="${AUTH0_CLIENT_ID_OUTPUT}") | .OutputValue ' <<< ${CF_JSON})
 echo $AUTH0_CLIENT_ID_SM
 
 
