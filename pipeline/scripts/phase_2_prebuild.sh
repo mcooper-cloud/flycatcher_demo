@@ -25,5 +25,12 @@ get_cf_outputs(){
 }
 
 get_cf_outputs
+
 get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
-echo $AUTH0_CLIENT_ID
+echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
+
+get_secret $AUTH0_CLIENT_SECRETE_SM AUTH0_CLIENT_SECRET
+echo "[+] Auth0 Client Secret: ******"
+
+get_param $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
+echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
