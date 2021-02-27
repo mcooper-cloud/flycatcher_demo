@@ -37,11 +37,12 @@ get_secrets_params(){
 
 auth0_deploy(){
 
-    echo "[+] npm root"
-    npm root -g
+#    echo "[+] npm root"
 
-    echo "[+] Listing node dir"
-    ls -l /usr/local/lib/node*
+    export PATH=$PATH:$(npm root -g)
+
+#    echo "[+] Listing node dir"
+#    ls -l /usr/local/lib/node*
 
     echo "[+] ENV"
     env
