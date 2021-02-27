@@ -13,6 +13,19 @@ const config = {
 };
 
 
+dump({
+    output_folder: './', // Output directory
+    base_path: basePath, // Allow to override basepath, if not take from input_file
+//    config_file: configFile, // Option to a config json
+    config: config, // Option to sent in json as object
+//    export_ids: exportIds, // Export the identifier field for each object type
+//    secret // Optionally pass in auth0 client secret seperate from config
+})
+.then(() => console.log('[+] Auth0 export was successful'))
+.catch(err => console.log(`[-] Auth0 export Error: ${err}`));
+
+
+
 //############################################################################
 //############################################################################
 //

@@ -37,26 +37,16 @@ get_secrets_params(){
 
 auth0_deploy(){
 
-#    echo "[+] npm root"
-
-#    export PATH=$PATH:$(npm root -g)
     export NODE_PATH=$(npm root -g)
-
-#    echo "[+] Listing node dir"
-#    ls -l /usr/local/lib/node*
-
-#    echo "[+] ENV"
-#    env
-
     cd $AUTH0_DEPLOY_PATH
-
     echo "[+] Node version $(node --version)"
     echo "[+] NPM version $(npm --version)"
-
-#    npm install
     npm start 
+
 }
 
 get_cf_outputs
 get_secrets_params
 auth0_deploy
+
+ls -lah
