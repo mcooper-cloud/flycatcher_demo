@@ -40,6 +40,7 @@ auth0_deploy(){
 #    echo "[+] npm root"
 
     export PATH=$PATH:$(npm root -g)
+    export NODE_PATH=$(npm root -g)
 
 #    echo "[+] Listing node dir"
 #    ls -l /usr/local/lib/node*
