@@ -16,7 +16,7 @@
         "url": "git+https://github.com/mcooper-cloud/flycatcher_demo.git"
     },
     "scripts": {
-        "start": "node --experimental-modules config.js"
+        "start": "node config.js"
     },
     "config": {},
     "keywords": [
