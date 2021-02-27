@@ -1,6 +1,6 @@
 {
     "name": "flycatcher-auth0-deploy",
-    "type" : "module",
+    "type" : "CommonJS",
     "version": "1.0.0",
     "private": true,
     "description": "Automated configuration of an Auth0 tenant",
