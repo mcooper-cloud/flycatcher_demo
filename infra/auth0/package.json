@@ -1,6 +1,6 @@
 {
     "name": "flycatcher-auth0-deploy",
-    "type" : "CommonJS",
+    "type" : "module",
     "version": "1.0.0",
     "private": true,
     "description": "Automated configuration of an Auth0 tenant",
@@ -16,7 +16,7 @@
         "url": "git+https://github.com/mcooper-cloud/flycatcher_demo.git"
     },
     "scripts": {
-        "start": "node config"
+        "start": "node --experimental-modules config.js"
     },
     "config": {},
     "keywords": [
