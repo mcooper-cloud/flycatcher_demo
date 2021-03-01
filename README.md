@@ -41,25 +41,25 @@ Additionally, this demonstration will also highlight any manual steps that need 
 
 **Step 1:** (implied) Clone this repo
 
-**Step 2:** (from the developer's laptop) [Deploy an S3 Staging Bucket](./docs/s3_staging.md)
+**Step 2 (Auth0):** (manual process) [Create a new Auth0 Tenant](https://auth0.com/docs/get-started/learn-the-basics)
 
-**Step 3 (AWS):** (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](./docs/aws_ci_cd_pipeline.md)
+**Step 3 (Auth0):** (manual process) [Install the Auth0 Deployment CLI Extension](https://auth0.com/docs/extensions/deploy-cli-tool)
 
-**Step 4 (AWS):** (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
+![Install Auth0 Deployment CLI Extension](./docs/mov/install_deploy_cli_extension.webp)
 
-![Update the CodeStar Connection Status](./mov/authorize_github_connection.webp)
+**Step 4:** (from the developer's laptop) [Deploy an S3 Staging Bucket](./docs/s3_staging.md)
 
-**Step 5 (Auth0):** (manual process) [Create a new Auth0 Tenant](https://auth0.com/docs/get-started/learn-the-basics)
+**Step 5 (AWS):** (from the developer's laptop) [Deploy a CI/CD pipeline using AWS Developer Tools](./docs/aws_ci_cd_pipeline.md)
 
-**Step 6 (Auth0):** (manual process) [Install the Auth0 Deployment CLI Extension](https://auth0.com/docs/extensions/deploy-cli-tool)
+**Step 6 (AWS):** (manual process) [Update the CodeStar Connection Status](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-update.html)
 
-![Install Auth0 Deployment CLI Extension](./mov/install_deploy_cli_extension.webp)
+![Update the CodeStar Connection Status](./docs/mov/authorize_github_connection.webp)
 
 **Step 7 (AWS):** (manual process) Configure Auth0 Secrets
 
 Using AWS Secrets Manager, copy and paste your Auth0 ClientID and ClientSecret into the secrets that were create in step 3
 
-![Configure Auth0 Secrets](./mov/aws_configure_auth0_secrets.webp)
+![Configure Auth0 Secrets](./docs/mov/aws_configure_auth0_secrets.webp)
 
 
 # Requirements
