@@ -106,9 +106,10 @@ function auth0_export(){
     echo "[+] NPM version $(npm --version)"
     npm start
 
-    zip -r $OUTPUT_FOLDER $ZIP_PACKAGE_NAME
+    zip -r $ZIP_PACKAGE_NAME $OUTPUT_FOLDER 
 
-    aws s3api put-object --bucket $STAGING_BUCKET_NAME \
+    aws s3api put-object \
+        --bucket $STAGING_BUCKET_NAME \
         --key $STAGING_BUCKET_EXPORT_PATH \
         --body $ZIP_PACKAGE_NAME
 
