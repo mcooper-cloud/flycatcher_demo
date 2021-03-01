@@ -88,4 +88,7 @@ function auth0_deploy(){
 
 }
 
+get_stack_outputs
+get_secrets_params
+
 auth0_deploy
