@@ -23,7 +23,7 @@ function export_env(){
     export AUTH0_EXPORT_PATH=infra/auth0/export
     export AUTH0_DEPLOY_PATH=infra/auth0/deploy
 
-    export AUTH0_TENANT_PATH=infra/auth0/tenant
+    export AUTH0_TENANT_PATH=../tenant
     export AUTH0_TENANT_YAML="tenant.yaml"
 
     export STAGING_BUCKET_NAME_OUTPUT="BucketName"
