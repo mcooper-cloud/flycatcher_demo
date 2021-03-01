@@ -24,6 +24,7 @@ function export_env(){
     export AUTH0_DEPLOY_PATH=infra/auth0/deploy
 
     export STAGING_BUCKET_NAME_OUTPUT="BucketName"
+    export STAGING_BUCKET_EXPORT_PATH="a0export"
 }
 
 function get_secret(){

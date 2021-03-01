@@ -39,14 +39,6 @@ function get_stack_outputs(){
     ## Pipeline stack outputs
     ## ... this is where we'll get Auth0 variables
     ##
-
-#    export STACK_JSON=$(
-#        aws cloudformation describe-stacks \
-#            --stack-name ${STACK_NAME}  \
-#            --query "Stacks[0].Outputs" \
-#            --output json
-#    )
-
     get_cf_outputs $STACK_NAME
 
     echo "[+] Cloudformation outputs for ${STACK_NAME}"
@@ -107,9 +99,18 @@ function auth0_export(){
     export OUTPUT_FOLDER="./a0export"
     export BASE_PATH="a0export"
 
+    ts=$(date +"%Y_%m_%d_%T" | sed -e 's/:/_/g')
+    ZIP_PACKAGE_NAME="${ts}_a0export.zip"
+
     echo "[+] Node version $(node --version)"
     echo "[+] NPM version $(npm --version)"
     npm start
+
+    zip -r $OUTPUT_FOLDER $ZIP_PACKAGE_NAME
+
+    aws s3api put-object --bucket $STAGING_BUCKET_NAME \
+        --key $STAGING_BUCKET_EXPORT_PATH \
+        --body $ZIP_PACKAGE_NAME
 
 }
 
