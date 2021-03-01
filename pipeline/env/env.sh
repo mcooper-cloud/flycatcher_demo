@@ -38,13 +38,13 @@ function get_parameter(){
 
 
 function get_cf_outputs(){
-    CF_JSON=$(
+    local cf_json=$(
         aws cloudformation describe-stacks \
             --stack-name $1  \
             --query "Stacks[0].Outputs" \
             --output json
     )
-    export $2=$value
+    export $2=$cf_json
 }
 
 export_env
