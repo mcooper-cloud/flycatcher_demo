@@ -11,6 +11,15 @@ const config = {
 };
 
 
+deploy({
+    input_file: `${process.env.AUTH0_TENANT_PATH}/${process.env.AUTH0_TENANT_YAML}`, // Input file for directory, change to .yaml for YAML
+    base_path: 'a0deploy', // Allow to override basepath, if not take from input_file
+    config: config, // Option to sent in json as object
+})
+.then(() => console.log('[+] Auth0 deploy was successful'))
+.catch(err => console.log(`[-] Auth0 deploy Error: ${err}`));
+
+
 /*
 
 //############################################################################

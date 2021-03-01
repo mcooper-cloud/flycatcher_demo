@@ -23,6 +23,9 @@ function export_env(){
     export AUTH0_EXPORT_PATH=infra/auth0/export
     export AUTH0_DEPLOY_PATH=infra/auth0/deploy
 
+    export AUTH0_TENANT_PATH=infra/auth0/tenant
+    export AUTH0_TENANT_YAML="tenant.yaml"
+
     export STAGING_BUCKET_NAME_OUTPUT="BucketName"
     export STAGING_BUCKET_EXPORT_PATH="a0export"
 }
@@ -36,6 +39,5 @@ function get_parameter(){
     local value=$(aws ssm get-parameter --name $1 --query Parameter.Value --output text)
     export $2=$value
 }
-
 
 export_env
