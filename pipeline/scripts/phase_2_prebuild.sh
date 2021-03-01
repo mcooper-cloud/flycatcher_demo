@@ -10,6 +10,24 @@ source $ENV_SH_PATH
 ##############################################################################
 ##############################################################################
 ##
+## generic get outputs from cloudformation stacks
+##
+##############################################################################
+##############################################################################
+
+
+function get_cf_outputs(){
+    CF_JSON=$(
+        aws cloudformation describe-stacks \
+            --stack-name $1  \
+            --query "Stacks[0].Outputs" \
+            --output json
+    )
+}
+
+##############################################################################
+##############################################################################
+##
 ## get outputs from cloudformation stacks
 ##
 ##############################################################################
@@ -17,36 +35,36 @@ source $ENV_SH_PATH
 
 function get_stack_outputs(){
 
-#    export CF_JSON=$(
+    ##
+    ## Pipeline stack outputs
+    ## ... this is where we'll get Auth0 variables
+    ##
+
+#    export STACK_JSON=$(
 #        aws cloudformation describe-stacks \
 #            --stack-name ${STACK_NAME}  \
 #            --query "Stacks[0].Outputs" \
 #            --output json
 #    )
 
-
-    ##
-    ## Pipeline stack outputs
-    ## ... this is where we'll get Auth0 variables
-    ##
-    get_cf_outputs ${STACK_NAME} STACK_JSON
+    get_cf_outputs $STACK_NAME
 
     echo "[+] Cloudformation outputs for ${STACK_NAME}"
-    echo ${STACK_JSON} | jq -rc '.[]'
+    echo ${CF_JSON} | jq -rc '.[]'
 
-    export AUTH0_CLIENT_ID_SM=$(echo ${STACK_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-    export AUTH0_CLIENT_SECRET_SM=$(echo ${STACK_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-    export AUTH0_DOMAIN_PARAM=$(echo ${STACK_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
     ##
     ## staging bucket stack outputs
     ## ... this is where we'll get the bucket name
     ##
-    get_cf_outputs ${STAGING_STACK_NAME} STAGING_STACK_JSON
+    get_cf_outputs $STAGING_STACK_NAME
 
     echo "[+] Cloudformation outputs for ${STAGING_STACK_NAME}"
-    echo ${STAGING_STACK_JSON} | jq -rc '.[]'
-    export STAGING_BUCKET_NAME=$(echo ${STAGING_STACK_JSON} | jq --arg VAR ${STAGING_BUCKET_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    echo ${cf_JSON} | jq -rc '.[]'
+    export STAGING_BUCKET_NAME=$(echo ${CF_JSON} | jq --arg VAR ${STAGING_BUCKET_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
 }
 
