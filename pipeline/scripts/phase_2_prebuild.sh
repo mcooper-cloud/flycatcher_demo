@@ -110,7 +110,7 @@ function auth0_export(){
 
     aws s3api put-object \
         --bucket $STAGING_BUCKET_NAME \
-        --key $STAGING_BUCKET_EXPORT_PATH/$PACKAGE_NAME \
+        --key $STAGING_BUCKET_EXPORT_PATH/$ZIP_PACKAGE_NAME \
         --body $ZIP_PACKAGE_NAME
 
 }
