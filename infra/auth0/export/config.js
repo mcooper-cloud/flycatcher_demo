@@ -1,6 +1,4 @@
 
-//import { deploy, dump } from 'auth0-deploy-cli';
-
 const { deploy, dump } = require("auth0-deploy-cli");
 
 const config = {
@@ -13,6 +11,15 @@ const config = {
 };
 
 
+//############################################################################
+//############################################################################
+//
+// Export Tenant Config
+//
+//############################################################################
+//############################################################################
+
+
 dump({
     output_folder: process.env.OUTPUT_FOLDER, // Output directory
     base_path: process.env.BASE_PATH, // Allow to override basepath, if not take from input_file
@@ -23,16 +30,16 @@ dump({
 .catch(err => console.log(`[-] Auth0 export Error: ${err}`));
 
 
-
-//############################################################################
-//############################################################################
-//
-// Export Tenant Config
-//
-//############################################################################
-//############################################################################
-
 /*
+
+//############################################################################
+//############################################################################
+//
+// REFERENCE
+//
+//############################################################################
+//############################################################################
+
 
 dump({
     output_folder: 'path/to/directory', // Output directory
@@ -44,25 +51,5 @@ dump({
 })
 .then(() => console.log('[+] Auth0 export was successful'))
 .catch(err => console.log(`[-] Auth0 export Error: ${err}`));
-
-
-//############################################################################
-//############################################################################
-//
-// Import tenant config
-//
-//############################################################################
-//############################################################################
-
-deploy({
-    input_file: 'path/to/yaml/or/directory', // Input file for directory, change to .yaml for YAML
-    base_path: basePath, // Allow to override basepath, if not take from input_file
-    config_file: configFile, // Option to a config json
-    config: configObj, // Option to sent in json as object
-    env, // Allow env variable mappings from process.env
-    secret // Optionally pass in auth0 client secret seperate from config
-})
-.then(() => console.log('[+] Auth0 deploy was successful'))
-.catch(err => console.log(`[-] Auth0 deploy Error: ${err}`));
 
 */

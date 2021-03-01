@@ -1,5 +1,5 @@
 {
-    "name": "flycatcher-auth0-deploy",
+    "name": "flycatcher-auth0-export",
     "version": "1.0.0",
     "private": true,
     "description": "Automated export of Auth0 tenant configuration",
