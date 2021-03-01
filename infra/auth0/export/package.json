@@ -2,7 +2,7 @@
     "name": "flycatcher-auth0-deploy",
     "version": "1.0.0",
     "private": true,
-    "description": "Automated configuration of an Auth0 tenant",
+    "description": "Automated export of Auth0 tenant configuration",
     "license": "MIT",
     "author": "Matt C",
     "main": "config.js",

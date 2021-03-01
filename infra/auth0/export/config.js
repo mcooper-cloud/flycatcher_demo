@@ -14,8 +14,8 @@ const config = {
 
 
 dump({
-    output_folder: './a0export/a0deploy_export.yaml', // Output directory
-    base_path: 'a0export', // Allow to override basepath, if not take from input_file
+    output_folder: process.env.OUTPUT_FOLDER, // Output directory
+    base_path: process.env.BASE_PATH, // Allow to override basepath, if not take from input_file
     config: config, // Option to sent in json as object
     export_ids: true, // Export the identifier field for each object type
 })
