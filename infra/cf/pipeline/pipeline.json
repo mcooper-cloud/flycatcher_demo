@@ -144,7 +144,13 @@
                         "CodePipelineIAMRoleParameterName",
                         "RepoName", "RepoBranch"
                     ]
-                }
+                },
+                {
+                    "Label" : { "default":"Auth0 Settings" },
+                    "Parameters" : [ 
+                        "Auth0Domain", 
+                    ]
+                },
             ]
         }
     },
@@ -591,9 +597,35 @@
                     "system_number": {"Ref" : "SystemNumber"}
                 }
             }
+        },
+        "Auth0MgmtAPIEndpointParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0MgmtAPIEndpoint" ]]},
+                "Type": "String",
+                "Value" : {"Fn::Join" : [ "", ["https://", {"Ref" : "Auth0Domain" }, "/api/v2/" ]]},
+                "Description": "Auth0 Domain",
+                "Tags": {
+                    "environment": {"Ref" : "EnvironmentName"},
+                    "project": {"Ref" : "ProjectName"},
+                    "system_number": {"Ref" : "SystemNumber"}
+                }
+            }
         }
     },
     "Outputs" : {
+        "ProjectName" : {
+            "Value" : { "Ref" : "ProjectName" },
+            "Description" : "Global project name"
+        },
+        "Environment" : {
+            "Value" : { "Ref" : "Environment" },
+            "Description" : "Global environment name"
+        },
+        "SystemNumber" : {
+            "Value" : { "Ref" : "SystemNumber" },
+            "Description" : "Global system number"
+        },
         "CodeBuildIAMRoleARN" : {
             "Value" : { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
             "Description" : "ARN for CodeBuild IAM role "
@@ -629,6 +661,10 @@
         "Auth0DomainParam" : {
             "Value" : { "Ref" : "Auth0DomainParam" },
             "Description" : "The name of the SSM Param holding the Auth0 domain"
+        },
+        "Auth0MgmtAPIEndpointParam" : {
+            "Value" : { "Ref" : "Auth0MgmtAPIEndpointParam" },
+            "Description" : "The name of the SSM Param holding the Auth0 management API enpoint URL"
         }
     }
 }

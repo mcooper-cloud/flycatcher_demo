@@ -47,6 +47,8 @@ function get_stack_outputs(){
     export AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
     export AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
     export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_MGMT_API_ENDPOINT_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_MGMT_API_ENDPOINT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
 
     ##
     ## staging bucket stack outputs
@@ -79,6 +81,12 @@ function get_secrets_params(){
 
     get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
     echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
+
+    get_parameter $AUTH0_MGMT_API_ENDPOINT_PARAM AUTH0_MGMT_API_ENDPOINT
+    echo "[+] Auth0 Management API Endpoint: ${AUTH0_MGMT_API_ENDPOINT}"
+
+    export AUTH0_SUBDOMAIN=$(echo $AUTH0_DOMAIN | cut -d'.' -f1)
+    echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
 }
 
 
