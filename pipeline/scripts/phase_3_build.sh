@@ -76,10 +76,17 @@ function get_secrets_params(){
     echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
 
     get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
-    echo "[+] Auth0 Client Secret: ******"
+    echo "[+] Auth0 Client Secret: ********$(echo ${AUTH0_CLIENT_SECRET} | grep -o '....$')"
 
     get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
     echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
+
+    get_parameter $AUTH0_MGMT_API_ENDPOINT_PARAM AUTH0_MGMT_API_ENDPOINT
+    echo "[+] Auth0 Management API Endpoint: ${AUTH0_MGMT_API_ENDPOINT}"
+
+    export AUTH0_SUBDOMAIN=$(echo ${AUTH0_DOMAIN} | cut -d'.' -f1)
+    echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
+
 }
 
 
