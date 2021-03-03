@@ -619,7 +619,7 @@
             "Description" : "Global project name"
         },
         "Environment" : {
-            "Value" : { "Ref" : "Environment" },
+            "Value" : { "Ref" : "EnvironmentName" },
             "Description" : "Global environment name"
         },
         "SystemNumber" : {
