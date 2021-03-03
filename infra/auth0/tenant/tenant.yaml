@@ -139,7 +139,6 @@ tenant:
     colors:
       page_background: '#FFFFFF'
       primary: '#0D2769'
-emailProvider: []
 emailTemplates: []
 clientGrants:
   - client_id: API Explorer Application
