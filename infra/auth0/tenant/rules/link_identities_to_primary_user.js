@@ -19,10 +19,17 @@ async function rule (user, context, callback) {
             return callback(null, user, context);
         }
 
+        /*
         const auth0ManagementClient = new ManagementClient({
             domain: auth0.domain,
             clientId: configuration.RULES_CLIENT_ID,
             clientSecret: configuration.RULES_CLIENT_SECRET
+        });
+        */
+
+        const auth0ManagementClient = new ManagementClient({
+            token: auth0.accessToken,
+            domain: auth0.domain
         });
 
         // get primary user

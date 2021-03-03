@@ -8,6 +8,13 @@ const config = {
     AUTH0_EXPORT_IDENTIFIERS: false,
     AUTH0_ALLOW_DELETE: true,
     AUTH0_API_MAX_RETRIES: 10
+    AUTH0_KEYWORD_REPLACE_MAPPINGS: {
+        "PROJECT_NAME": process.env.PROJECT_NAME,
+        "ENVIRONMENT": process.env.ENVIRONMENT,
+        "SYSTEM_NUMBER": process.env.SYSTEM_NUMBER,
+        "AUTH0_SUBDOMAIN": process.env.AUTH0_SUBDOMAIN,
+        "AUTH0_MGMT_API_ENDPOINT": process.env.AUTH0_MGMT_API_ENDPOINT,
+    },
 };
 
 
