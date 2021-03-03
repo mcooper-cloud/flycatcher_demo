@@ -1,38 +1,8 @@
-rules:
-  - name: Helper functions
-    script: ./rules/helper_functions.js
-    stage: login_success
-    enabled: true
-    order: 1
-  - name: Prompt user to verify or create their account
-    script: ./rules/prompt_verify_or_create_account.js
-    stage: login_success
-    enabled: true
-    order: 2
-  - name: Prompt user to add a verified phone number
-    script: ./rules/prompt_add_verified_phone_number.js
-    stage: login_success
-    enabled: false
-    order: 3
-  - name: Link identities to primary user
-    script: ./rules/link_identities_to_primary_user.js
-    stage: login_success
-    enabled: true
-    order: 4
-rulesConfigs:
-  - key: RULES_CLIENT_ID
-    value: '##RULES_CLIENT_ID##'
-  - key: RULES_CLIENT_SECRET
-    value: '##RULES_CLIENT_SECRET##'
-  - key: PROMPT_APP_BASE_URL
-    value: '##PROMPT_APP_BASE_URL##'
+rules: []
 hooks: []
-pages:
-  - name: login
-    enabled: true
-    html: ./pages/login.html
+pages: []
 resourceServers:
-  - name: Demo API
+  - name: Demo Resource Server
     identifier: 'urn:demo-api'
     allow_offline_access: false
     signing_alg: RS256
@@ -58,109 +28,7 @@ clients:
       expiration_type: non-expiring
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
-  - name: Prompt
-    allowed_clients: []
-    allowed_logout_urls:
-      - 'https://api-demo-prompt.demo/'
-      - 'https://auth0-api-demo-prompt.example.com/'
-    app_type: regular_web
-    callbacks:
-      - 'https://api-demo-prompt.demo/callback'
-      - 'https://auth0-api-demo-prompt.example.com/callback'
-    client_aliases: []
-    cross_origin_auth: false
-    custom_login_page_on: true
-    grant_types:
-      - implicit
-      - client_credentials
-      - 'http://auth0.com/oauth/grant-type/passwordless/otp'
-    is_first_party: true
-    is_token_endpoint_ip_header_trusted: false
-    jwt_configuration:
-      alg: RS256
-      lifetime_in_seconds: 36000
-      secret_encoded: false
-    logo_uri: >-
-      https://example.com/logo.jpg
-    native_social_login:
-      apple:
-        enabled: false
-      facebook:
-        enabled: false
-    oidc_conformant: true
-    refresh_token:
-      expiration_type: non-expiring
-      leeway: 0
-      infinite_token_lifetime: true
-      infinite_idle_token_lifetime: true
-      token_lifetime: 31557600
-      idle_token_lifetime: 2592000
-      rotation_type: non-rotating
-    sso_disabled: false
-    token_endpoint_auth_method: client_secret_post
-  - name: Rules
-    app_type: non_interactive
-    cross_origin_auth: false
-    custom_login_page_on: true
-    grant_types:
-      - client_credentials
-    is_first_party: true
-    is_token_endpoint_ip_header_trusted: false
-    jwt_configuration:
-      alg: RS256
-      lifetime_in_seconds: 36000
-      secret_encoded: false
-    oidc_conformant: true
-    refresh_token:
-      expiration_type: non-expiring
-      leeway: 0
-      infinite_token_lifetime: true
-      infinite_idle_token_lifetime: true
-      token_lifetime: 31557600
-      idle_token_lifetime: 2592000
-      rotation_type: non-rotating
-    sso_disabled: false
-    token_endpoint_auth_method: client_secret_post
-  - name: Test App Demo
-    allowed_clients: []
-    allowed_logout_urls:
-      - 'api.demo.TestApp://api-demo.us.auth0.com/ios/api.demo.TestApp/callback'
-    app_type: native
-    callbacks:
-      - 'api.demo.TestApp://example.us.auth0.com/ios/api.demo.TestApp/callback'
-      - 'api2.demo.TestApp://example.us.auth0.com/ios/api2.demo.TestApp/callback'
-    client_aliases: []
-    cross_origin_auth: false
-    custom_login_page_on: true
-    grant_types:
-      - authorization_code
-      - implicit
-      - refresh_token
-    is_first_party: true
-    is_token_endpoint_ip_header_trusted: false
-    jwt_configuration:
-      alg: RS256
-      lifetime_in_seconds: 36000
-      secret_encoded: false
-    logo_uri: >-
-      https://example.com/app_logo.jpg
-    native_social_login:
-      apple:
-        enabled: false
-      facebook:
-        enabled: false
-    oidc_conformant: true
-    refresh_token:
-      expiration_type: non-expiring
-      leeway: 0
-      infinite_token_lifetime: true
-      infinite_idle_token_lifetime: true
-      token_lifetime: 2592000
-      idle_token_lifetime: 1296000
-      rotation_type: non-rotating
-    sso_disabled: false
-    token_endpoint_auth_method: none
-  - name: Test App
+  - name: Test Web App
     allowed_clients: []
     allowed_logout_urls:
       - 'https://api-demo.us.webtask.run/auth0-authentication-api-debugger'
@@ -221,13 +89,11 @@ clients:
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
 databases:
-  - name: api-customers
+  - name: web-app-customers
     strategy: auth0
     enabled_clients:
       - auth0-deploy-cli
-      - Prompt
-      - Test App
-      - Test App Demo
+      - Test Web App
       - API Explorer Application
     is_domain_connection: false
     options:
@@ -252,60 +118,8 @@ databases:
         min_length: 1
       enabledDatabaseCustomization: false
     realms:
-      - api-customers
-connections:
-  - name: email
-    strategy: email
-    enabled_clients:
-      - Prompt
-    is_domain_connection: false
-    options:
-      name: email
-      totp:
-        length: 6
-        time_step: 180
-      email:
-        body: ./email.html
-        from: '{{ application.name }} <root@auth0.com>'
-        syntax: liquid
-        subject: 'Welcome to {{ application.name }}'
-      disable_signup: false
-      brute_force_protection: true
-  - name: sms
-    strategy: sms
-    enabled_clients:
-      - Prompt
-      - Test App
-      - Test App Demo
-    is_domain_connection: false
-    options:
-      from: '##TWILIO_SMS_FROM_PHONE##'
-      name: sms
-      totp:
-        length: 6
-        time_step: 180
-      syntax: md_with_macros
-      template: 'Your verification code is: @@password@@'
-      twilio_sid: '##TWILIO_SID##'
-      twilio_token: '##TWILIO_TOKEN##'
-      disable_signup: false
-      messaging_service_sid: null
-      brute_force_protection: true
-  - name: google-oauth2
-    strategy: google-oauth2
-    enabled_clients:
-      - Prompt
-      - Test App
-      - Test App Demo
-    is_domain_connection: false
-    options:
-      client_id: '##GOOGLE_CLIENT_ID##'
-      client_secret: '##GOOGLE_CLIENT_SECRET##'
-      email: true
-      scope:
-        - email
-        - profile
-      profile: true
+      - web-app-customers
+connections: []
 tenant:
   enabled_locales:
     - en
@@ -316,7 +130,7 @@ tenant:
     new_universal_login_experience_enabled: true
     universal_login: true
     disable_clickjack_protection_headers: false
-  friendly_name: Test App
+  friendly_name: wagtail
   picture_url: >-
       https://example.com/logo.jpg
   support_email: ''
@@ -325,15 +139,7 @@ tenant:
     colors:
       page_background: '#FFFFFF'
       primary: '#0D2769'
-emailProvider:
-  name: smtp
-  credentials:
-    smtp_host: smtp.mailtrap.io
-    smtp_port: 2525
-    smtp_user: '##SMTP_PROVIDER_USERNAME##'
-    smtp_pass: '##SMTP_PROVIDER_PASSWORD##'
-  default_from_address: Test App <noreply@example.com>
-  enabled: true
+emailProvider: []
 emailTemplates: []
 clientGrants:
   - client_id: API Explorer Application
@@ -448,18 +254,6 @@ clientGrants:
       - 'create:role_members'
       - 'read:role_members'
       - 'delete:role_members'
-  - client_id: Prompt
-    audience: 'https://api-demo.us.auth0.com/api/v2/'
-    scope:
-      - 'read:users'
-      - 'update:users'
-      - 'create:users'
-      - 'read:tenant_settings'
-  - client_id: Rules
-    audience: 'https://api-demo.us.auth0.com/api/v2/'
-    scope:
-      - 'read:users'
-      - 'update:users'
 guardianFactors:
   - name: duo
     enabled: false
