@@ -141,6 +141,61 @@ tenant:
       primary: '#0D2769'
 emailTemplates: []
 clientGrants:
+  - client_id: auth0-deploy-cli
+    audience: '##AUTH0_MGMT_API_ENDPOINT##'
+    scope:
+      - create:client_grants
+      - read:client_grants
+      - update:client_grants
+      - delete:client_grants
+      - create:clients
+      - read:clients
+      - update:clients
+      - delete:clients
+      - create:client_keys
+      - read:client_keys
+      - update:client_keys
+      - delete:client_keys
+      - create:connections
+      - read:connections
+      - update:connections
+      - delete:connections
+      - create:resource_servers
+      - read:resource_servers
+      - update:resource_servers
+      - delete:resource_servers
+      - create:rules
+      - read:rules
+      - update:rules
+      - delete:rules
+      - create:hooks
+      - read:hooks
+      - update:hooks
+      - delete:hooks
+      - read:rules_configs
+      - update:rules_configs
+      - delete:rules_configs
+      - create:email_provider
+      - read:email_provider
+      - update:email_provider
+      - delete:email_provider
+      - read:tenant_settings
+      - update:tenant_settings
+      - read:grants
+      - delete:grants
+      - read:guardian_factors
+      - update:guardian_factors
+      - create:email_templates
+      - read:email_templates
+      - update:email_templates
+      - create:roles
+      - read:roles
+      - update:roles
+      - delete:roles
+      - read:prompts
+      - update:prompts
+      - read:branding
+      - update:branding
   - client_id: API Explorer Application
     audience: '##AUTH0_MGMT_API_ENDPOINT##'
     scope:
