@@ -49,6 +49,12 @@ function get_stack_outputs(){
     export AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
     export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
+    export AUTH0_MGMT_API_ENDPOINT_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_MGMT_API_ENDPOINT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+    export PROJECT_NAME=$(echo ${CF_JSON} | jq --arg VAR ${PROJECT_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export ENVIRONMENT=$(echo ${CF_JSON} | jq --arg VAR ${ENVIRONMENT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export SYSTEM_NUMBER=$(echo ${CF_JSON} | jq --arg VAR ${SYSTEM_NUMBER_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
     ##
     ## staging bucket stack outputs
     ## ... this is where we'll get the bucket name
