@@ -36,14 +36,149 @@ function export_env(){
     export STAGING_BUCKET_EXPORT_PATH="a0export"
 }
 
+##############################################################################
+##############################################################################
+##
+## generic get outputs from cloudformation stacks
+##
+##############################################################################
+##############################################################################
+
+
+function get_cf_outputs(){
+    CF_JSON=$(
+        aws cloudformation describe-stacks \
+            --stack-name $1  \
+            --query "Stacks[0].Outputs" \
+            --output json
+    )
+}
+
+
+##############################################################################
+##############################################################################
+##
+## get outputs from cloudformation stacks
+##
+##############################################################################
+##############################################################################
+
+
+function get_stack_outputs(){
+
+    ##
+    ## Pipeline stack outputs
+    ## ... this is where we'll get Auth0 variables
+    ##
+    get_cf_outputs $STACK_NAME
+
+    echo "[+] Cloudformation outputs for ${STACK_NAME}"
+    echo ${CF_JSON} | jq -rc '.[]'
+
+    export AUTH0_CLIENT_ID_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_ID_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_CLIENT_SECRET_SM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CLIENT_SECRET_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_MGMT_API_ENDPOINT_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_MGMT_API_ENDPOINT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+    export PROJECT_NAME=$(echo ${CF_JSON} | jq --arg VAR ${PROJECT_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export ENVIRONMENT=$(echo ${CF_JSON} | jq --arg VAR ${ENVIRONMENT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export SYSTEM_NUMBER=$(echo ${CF_JSON} | jq --arg VAR ${SYSTEM_NUMBER_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+    ##
+    ## staging bucket stack outputs
+    ## ... this is where we'll get the bucket name
+    ##
+    get_cf_outputs $STAGING_STACK_NAME
+
+    echo "[+] Cloudformation outputs for ${STAGING_STACK_NAME}"
+    echo ${cf_JSON} | jq -rc '.[]'
+    export STAGING_BUCKET_NAME=$(echo ${CF_JSON} | jq --arg VAR ${STAGING_BUCKET_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+}
+
+
+##############################################################################
+##############################################################################
+##
+## generic get secrets from AWS Secrets Manager
+##
+##############################################################################
+##############################################################################
+
+
 function get_secret(){
     local value=$(aws secretsmanager get-secret-value --secret-id $1 --query SecretString --output text)
     export $2=$value
 }
 
+
+##############################################################################
+##############################################################################
+##
+## generic get parameter from AWS SSM Parameter Store
+##
+##############################################################################
+##############################################################################
+
+
 function get_parameter(){
     local value=$(aws ssm get-parameter --name $1 --query Parameter.Value --output text)
     export $2=$value
 }
+
+
+##############################################################################
+##############################################################################
+##
+## get Secrets Manager and SSM Parameter Store values
+##
+##############################################################################
+##############################################################################
+
+
+function get_secrets_params(){
+    get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
+    echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
+
+    get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
+    echo "[+] Auth0 Client Secret: ********$(echo ${AUTH0_CLIENT_SECRET} | grep -o '....$')"
+
+    get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
+    echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
+
+    get_parameter $AUTH0_MGMT_API_ENDPOINT_PARAM AUTH0_MGMT_API_ENDPOINT
+    echo "[+] Auth0 Management API Endpoint: ${AUTH0_MGMT_API_ENDPOINT}"
+
+    export AUTH0_SUBDOMAIN=$(echo ${AUTH0_DOMAIN} | cut -d'.' -f1)
+    echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
+}
+
+
+##############################################################################
+##############################################################################
+##
+## bundeled get Secrets Manager and SSM Parameter Store values
+##
+##############################################################################
+##############################################################################
+
+
+function get_secrets_params(){
+    get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
+    echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
+
+    get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
+    echo "[+] Auth0 Client Secret: ********$(echo ${AUTH0_CLIENT_SECRET} | grep -o '....$')"
+
+    get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
+    echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
+
+    get_parameter $AUTH0_MGMT_API_ENDPOINT_PARAM AUTH0_MGMT_API_ENDPOINT
+    echo "[+] Auth0 Management API Endpoint: ${AUTH0_MGMT_API_ENDPOINT}"
+
+    export AUTH0_SUBDOMAIN=$(echo ${AUTH0_DOMAIN} | cut -d'.' -f1)
+    echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
+}
+
 
 export_env
