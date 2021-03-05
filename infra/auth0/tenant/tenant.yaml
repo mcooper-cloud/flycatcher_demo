@@ -89,7 +89,7 @@ clients:
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
 databases:
-  - name: web-app-customers
+  - name: "##AUTH0_SUBDOMAIN##-customers"
     strategy: auth0
     enabled_clients:
       - auth0-deploy-cli
@@ -118,7 +118,7 @@ databases:
         min_length: 1
       enabledDatabaseCustomization: false
     realms:
-      - web-app-customers
+      - "##AUTH0_SUBDOMAIN##-customers"
 connections: []
 tenant:
   enabled_locales:
