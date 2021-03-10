@@ -22,7 +22,7 @@ function auth0_deploy(){
 
     export NODE_PATH=$(npm root -g)
 
-    export INPUT_FOLDER="${AUTH0_TENANT_PATH}/${AUTH0_TENANT_YAML}"
+    export INPUT_PATH="${AUTH0_TENANT_PATH}/${AUTH0_TENANT_YAML}"
     export BASE_PATH="a0deploy"
 
     echo "[+] Node version $(node --version)"
@@ -33,5 +33,15 @@ function auth0_deploy(){
 
 get_stack_outputs
 get_secrets_params
+
+##
+## stage web app
+##
+s3_sync ./${WEB_APP_PATH} ${STAGING_BUCKET_NAME} ${WEB_APP_PATH}
+
+##
+## stage web api
+##
+s3_sync ./${WEB_API_PATH} ${STAGING_BUCKET_NAME} ${WEB_API_PATH}
 
 auth0_deploy

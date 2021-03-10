@@ -7,8 +7,17 @@ function export_env(){
     export PHASE_START=$DATE_STRING
     echo "[+] $(date) PHASE_START: $PHASE_START"
 
-    export STACK_NAME="flycatcher-cicd-pipeline"
+    export PIPELINE_STACK_NAME="flycatcher-cicd-pipeline"
     export STAGING_STACK_NAME="flycatcher-staging-bucket"
+
+
+    ##
+    ## general stack output variable names
+    ##
+    export PROJECT_NAME_OUTPUT="ProjectName"
+    export ENVIRONMENT_OUTPUT="EnvironmentName"
+    export SYSTEM_NUMBER_OUTPUT="SystemNumber"
+
 
     ##
     ## Cloudformation outputs used to dynamically retrieve Auth0 data
@@ -18,10 +27,6 @@ function export_env(){
     export AUTH0_DOMAIN_PARAM_OUTPUT="Auth0DomainParam"
     export AUTH0_MGMT_API_ENDPOINT_OUTPUT="Auth0MgmtAPIEndpointParam"
 
-
-    export PROJECT_NAME_OUTPUT="ProjectName"
-    export ENVIRONMENT_OUTPUT="Environment"
-    export SYSTEM_NUMBER_OUTPUT="SystemNumber"
 
     ##
     ## path related
@@ -34,6 +39,13 @@ function export_env(){
 
     export STAGING_BUCKET_NAME_OUTPUT="BucketName"
     export STAGING_BUCKET_EXPORT_PATH="a0export"
+
+    ##
+    ## application paths
+    ##
+    export WEB_APP_PATH="apps/web_app/app"
+    export WEB_API_PATH="apps/web_app/api"
+
 }
 
 ##############################################################################
@@ -70,7 +82,7 @@ function get_stack_outputs(){
     ## Pipeline stack outputs
     ## ... this is where we'll get Auth0 variables
     ##
-    get_cf_outputs $STACK_NAME
+    get_cf_outputs $PIPELINE_STACK_NAME
 
     echo "[+] Cloudformation outputs for ${STACK_NAME}"
     echo ${CF_JSON} | jq -rc '.[]'
@@ -180,5 +192,24 @@ function get_secrets_params(){
     echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
 }
 
+
+##############################################################################
+##############################################################################
+##
+## sync local directory w/ S3 path
+##
+##############################################################################
+##############################################################################
+
+
+function s3_sync(){
+
+    LOCAL_DIR=$1
+    BUCKET=$2
+    S3_PATH=$3
+
+    aws s3 sync ${LOCAL_DIR} s3://${BUCKET}/${S3_PATH}
+
+}
 
 export_env
