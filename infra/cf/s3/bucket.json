@@ -4,7 +4,7 @@
         "EnvironmentName": {
             "Type": "String",
             "Description": "Environment level",
-            "AllowedValues" : ["dev", "test", "prod", "mgmt"],
+            "AllowedValues" : ["dev", "staging", "uat", "qa", "test", "prod", "mgmt"],
             "Default": "dev"
         },
         "ProjectName": {
