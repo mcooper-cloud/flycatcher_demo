@@ -61,6 +61,7 @@ Using AWS Secrets Manager, copy and paste your Auth0 ClientID and ClientSecret i
 
 ![Configure Auth0 Secrets](./docs/mov/aws_configure_auth0_secrets.webp)
 
+**Step 8 (AWS):** (psuedo-manual) [Create an SSH key pair](https://docs.aws.amazon.com/cli/latest/reference/ec2/import-key-pair.html)
 
 # Requirements
 
