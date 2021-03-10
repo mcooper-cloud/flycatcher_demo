@@ -24,7 +24,7 @@ export_env(){
 
     export WORKING_DIR=$(pwd)
     export INFRA_PATH='infra/cf'
-    export PARAM_PATH='params/cf'
+    export PARAM_PATH='infra/cf/params'
 
     export CF_TEMPLATE_PATH=$INFRA_PATH'/s3/bucket.json'
     export CF_PARAM_PATH=$PARAM_PATH'/staging_bucket_params.json'
