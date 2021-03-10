@@ -1,0 +1,42 @@
+[
+    {
+        "ParameterKey" : "EnvironmentName",
+        "ParameterValue" : "dev"
+    },
+    {
+        "ParameterKey" : "ProjectName",
+        "ParameterValue" : "flycatcher"
+    },
+    {
+        "ParameterKey" : "SystemNumber",
+        "ParameterValue" : "007"
+    },
+    {
+        "ParameterKey" : "VPCCIDR",
+        "ParameterValue" : "10.0.0.0/16"
+    },
+    {
+        "ParameterKey" : "SubnetOneCIDR",
+        "ParameterValue" : "10.0.1.0/24"
+    },
+    {
+        "ParameterKey" : "SubnetTwoCIDR",
+        "ParameterValue" : "10.0.2.0/24"
+    },
+    {
+        "ParameterKey" : "KeyName",
+        "ParameterValue" : "flycatcher-ssh"
+    },
+    {
+        "ParameterKey" : "DesiredCapacity",
+        "ParameterValue" : "1"
+    },
+    {
+        "ParameterKey" : "MaxSize",
+        "ParameterValue" : "1"
+    },
+    {
+        "ParameterKey" : "InstanceType",
+        "ParameterValue" : "t2.micro"
+    }
+]
