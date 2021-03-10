@@ -1,31 +1,23 @@
 [
     {
         "ParameterKey" : "EnvironmentName",
-        "ParameterValue" : "[ARBITRARY ENV NAME]"
+        "ParameterValue" : "dev"
     },
     {
         "ParameterKey" : "ProjectName",
-        "ParameterValue" : "[ARBITRARY PROJECT NAME]"
+        "ParameterValue" : "flycatcher"
     },
     {
         "ParameterKey" : "SystemNumber",
-        "ParameterValue" : "[ARBITRARY SYSTEM NUMBER]"
+        "ParameterValue" : "007"
     },
     {
         "ParameterKey" : "Domain",
-        "ParameterValue" : "[DOMAIN USED IN BUCKET NAMING]"
-    },
-    {
-        "ParameterKey" : "BucketNamePrefix",
-        "ParameterValue" : "[PREFIX USED IN BUCKET NAMING]"
+        "ParameterValue" : "example.com"
     },
     {
         "ParameterKey" : "BucketVersionStatus",
         "ParameterValue" : "[ Suspended | Enabled ]"
-    },
-    {
-        "ParameterKey" : "BucketParameterName",
-        "ParameterValue" : "[NAME OF SSM PARAMETER WHERE BUCKET NAME IS STORED]"
     },
     {
         "ParameterKey" : "KMSKeyARN",

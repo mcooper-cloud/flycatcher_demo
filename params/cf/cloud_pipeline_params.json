@@ -1,35 +1,19 @@
 [
     {
         "ParameterKey" : "EnvironmentName",
-        "ParameterValue" : "[ARBITRARY ENV NAME]"
+        "ParameterValue" : "dev"
     },
     {
         "ParameterKey" : "ProjectName",
-        "ParameterValue" : "[ARBITRARY PROJECT NAME]"
+        "ParameterValue" : "flycatcher"
     },
     {
         "ParameterKey" : "SystemNumber",
-        "ParameterValue" : "[ARBITRARY SYSTEM NUMBER]"
+        "ParameterValue" : "007"
     },
     {
         "ParameterKey" : "Auth0Domain",
         "ParameterValue" : "example.auth0.com"
-    },
-    {
-        "ParameterKey" : "CodeBuildIAMRoleName",
-        "ParameterValue" : "flycatcher-codebuild"
-    },
-    {
-        "ParameterKey" : "CodeBuildIAMRoleParameterName",
-        "ParameterValue" : "flycatcher-codebuild-role-arn"
-    },
-    {
-        "ParameterKey" : "CodePipelineIAMRoleName",
-        "ParameterValue" : "flycather-codepipeline"
-    },
-    {
-        "ParameterKey" : "CodePipelineIAMRoleParameterName",
-        "ParameterValue" : "flycatcher-codepipeline-role-arn"
     },
     {
         "ParameterKey" : "CodeBuildLocation",

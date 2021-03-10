@@ -4,8 +4,8 @@
         "EnvironmentName": {
             "Type": "String",
             "Description": "Environment level",
-            "AllowedValues" : ["DEV", "TEST", "PROD", "MGMT"],
-            "Default": "DEV"
+            "AllowedValues" : ["dev", "test", "prod", "mgmt"],
+            "Default": "dev"
         },
         "ProjectName": {
             "Type": "String",
@@ -17,11 +17,6 @@
             "Description": "Internal system number",
             "Default": "USER_INPUT_REQUIRED"
         },
-        "BucketNamePrefix": {
-            "Type": "String",
-            "Description": "Prefix of the bucket name",
-            "Default": "base-S3Bucket"
-        },
         "Domain": {
             "Type": "String",
             "Description": "Domain used to form the bucket name",
@@ -31,11 +26,6 @@
             "Type": "String",
             "Description": "Status of S3 bucket versioning (Enabled | Suspended)",
             "Default": "Suspended"
-        },
-        "BucketParameterName": {
-            "Type": "String",
-            "Description": "Name of the value that will be stored in AWS Parameter Store",
-            "Default": "base-S3Bucket-parameter"
         },
         "KMSKeyARN": {
             "Type": "String",
@@ -50,9 +40,9 @@
                     "Label" : { "default":"S3Bucket S3 Bucket Settings" },
                     "Parameters" : [ 
                         "EnvironmentName", "ProjectName",
-                        "SystemNumber", "BucketNamePrefix",
+                        "SystemNumber", 
                         "Domain", "BucketVersionStatus",
-                        "BucketParameterName", "KMSKeyARN"
+                        "KMSKeyARN"
                     ]
                 }
             ]
@@ -77,25 +67,16 @@
             "Type" : "AWS::S3::Bucket",
             "Properties" : {
                 "BucketName" : { "Fn::Sub": [ 
-                    "${Prefix}.${AccountID}.${Domain}", { 
-                        "Prefix": {"Ref" : "BucketNamePrefix" },
-                        "AccountID": {"Ref" : "AWS::AccountId" },
+                    "${ProjectName}.${EnvironmentName}.${Domain}", { 
+                        "ProjectName": {"Ref" : "ProjectName" },
+                        "EnvironmentName": {"Ref" : "EnvironmentName" },
                         "Domain": {"Ref" : "Domain" }
                     }
                 ]},
                 "Tags" : [ 
-                    {
-                        "Key" : "environment",
-                        "Value" : { "Ref" : "EnvironmentName" }
-                    },
-                    {
-                        "Key" : "project",
-                        "Value" : { "Ref" : "ProjectName" }
-                    },
-                    {
-                        "Key" : "system_number",
-                        "Value" : { "Ref" : "SystemNumber" }
-                    }
+                    {"Key" : "EnvironmentName","Value" : { "Ref" : "EnvironmentName" }},
+                    {"Key" : "ProjectName","Value" : { "Ref" : "ProjectName" }},
+                    {"Key" : "SystemNumber","Value" : { "Ref" : "SystemNumber" }}
                 ],
                 "BucketEncryption" : { "Fn::If" : 
                     [ "EnableEncryption",
@@ -147,47 +128,71 @@
         "BucketNameParam": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Ref" : "BucketParameterName"},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "BucketName" 
+                ]]},
                 "Type": "String",
                 "Value" : {"Ref" : "S3Bucket"},
                 "Description": "Name of S3 bucket",
                 "Tags": {
-                    "environment": {"Ref" : "EnvironmentName"},
-                    "project": {"Ref" : "ProjectName"},
-                    "system_number": {"Ref" : "SystemNumber"}
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
         },
         "BucketARNParam": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "BucketParameterName" }, "ARN" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "BucketARN" 
+                ]]},
                 "Type": "String",
                 "Value" : { "Fn::GetAtt" : [ "S3Bucket", "Arn" ] },
                 "Description": "Name of S3 bucket",
                 "Tags": {
-                    "environment": {"Ref" : "EnvironmentName"},
-                    "project": {"Ref" : "ProjectName"},
-                    "system_number": {"Ref" : "SystemNumber"}
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
         },
         "BucketRegionalDomainParam": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "BucketParameterName" }, "Regional-Domain" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "BucketRegionalDomain" 
+                ]]},
                 "Type": "String",
                 "Value" : { "Fn::GetAtt" : [ "S3Bucket", "RegionalDomainName" ] },
                 "Description": "Name of S3 bucket",
                 "Tags": {
-                    "environment": {"Ref" : "EnvironmentName"},
-                    "project": {"Ref" : "ProjectName"},
-                    "system_number": {"Ref" : "SystemNumber"}
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
         }
     },
     "Outputs" : {
+        "ProjectName" : {
+            "Value" : { "Ref" : "ProjectName" },
+            "Description" : "Global project name"
+        },
+        "EnvironmentName" : {
+            "Value" : { "Ref" : "EnvironmentName" },
+            "Description" : "Global environment name"
+        },
+        "SystemNumber" : {
+            "Value" : { "Ref" : "SystemNumber" },
+            "Description" : "Global system number"
+        },
         "BucketARN" : {
             "Value" : { "Fn::GetAtt" : [ "S3Bucket", "Arn" ] },
             "Description" : "ARN of S3 Bucket"
