@@ -19,7 +19,7 @@ const config = {
 
 
 deploy({
-    input_file: `${process.env.AUTH0_TENANT_PATH}/${process.env.AUTH0_TENANT_YAML}`, // Input file for directory, change to .yaml for YAML
+    input_file: process.env.INPUT_PATH, // Input file for directory, change to .yaml for YAML
     base_path: 'a0deploy', // Allow to override basepath, if not take from input_file
     config: config, // Option to sent in json as object
 })

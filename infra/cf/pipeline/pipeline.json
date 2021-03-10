@@ -4,7 +4,8 @@
         "EnvironmentName": {
             "Type": "String",
             "Description": "Environment level of the deployment pipeline",
-            "Default": "DEV"
+            "AllowedValues" : ["dev", "staging", "uat", "qa", "test", "prod", "mgmt"],
+            "Default": "dev"
         },
         "ProjectName": {
             "Type": "String",
@@ -25,26 +26,6 @@
             "Type": "String",
             "Description": "Auth0 Tenant Domain",
             "Default": "example.auth0.com"
-        },
-        "CodeBuildIAMRoleName": {
-            "Type": "String",
-            "Description": "CodeBuild IAM role name",
-            "Default": "CodeBuildIAMRole"
-        },
-        "CodeBuildIAMRoleParameterName": {
-            "Type": "String",
-            "Description": "CodeBuild IAM role name",
-            "Default": "CodeBuildIAMRoleParameter"
-        },
-        "CodePipelineIAMRoleName": {
-            "Type": "String",
-            "Description": "Pipeline IAM role name",
-            "Default": "CodePipelineIAMRole"
-        },
-        "CodePipelineIAMRoleParameterName": {
-            "Type": "String",
-            "Description": "Pipeline IAM role name",
-            "Default": "CodePipelineIAMRoleParameter"
         },
         "ArtifactBucketName": {
             "Type": "String",
@@ -130,7 +111,6 @@
                 {
                     "Label" : { "default":"CodeBuild Settings" },
                     "Parameters" : [ 
-                        "CodeBuildIAMRoleName", "CodeBuildIAMRoleParameterName",
                         "CodeBuildLocation", "CodeBuildEnvType",
                         "CodeBuildComputeType", "CodeBuildImage",
                         "CodeBuildSpecFile", "CodeBuildTimeout",
@@ -140,8 +120,6 @@
                 {
                     "Label" : { "default":"CodePipeline Settings" },
                     "Parameters" : [ 
-                        "CodePipelineIAMRoleName", 
-                        "CodePipelineIAMRoleParameterName",
                         "RepoName", "RepoBranch"
                     ]
                 },
@@ -158,21 +136,16 @@
         "CodeBuildIAMRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
-                "RoleName" : { "Fn::Join" : [ "", 
-                        [
-                            { "Ref":"EnvironmentName"},
-                            "-",
-                            { "Ref" : "CodeBuildIAMRoleName" }
-                        ]
-                    ]
-                },
+                "RoleName" : { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "CodeBuildIAMRole"
+                ]]},
                 "AssumeRolePolicyDocument":{
                     "Statement":[{
                         "Effect":"Allow",
                         "Principal":{"Service":["codebuild.amazonaws.com"]},
-                        "Action":[
-                            "sts:AssumeRole"
-                        ]
+                        "Action":["sts:AssumeRole"]
                     }]
                 },
                 "Path":"/",
@@ -186,18 +159,27 @@
                         }],
                         "Version":"2012-10-17"
                     }
-                }]
+                }],
+                "Tags" : [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
             }
         },
         "CodeBuildIAMRoleARN": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "CodeBuildIAMRoleParameterName" }, "ARN" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "CodeBuildIAMRoleARN" 
+                ]]},
                 "Type": "String",
                 "Value": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
                 "Description": "ARN for CodeBuild IAM role",
                 "Tags": {
-                    "Environment": {"Ref" : "EnvironmentName"},
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
                     "ProjectName": {"Ref" : "ProjectName"},
                     "SystemNumber": {"Ref" : "SystemNumber"}
                 }
@@ -206,15 +188,11 @@
         "CodePipelineIAMRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
-                "RoleName" : { 
-                    "Fn::Join" : [ "", 
-                        [
-                            { "Ref":"EnvironmentName"},
-                            "-",
-                            { "Ref" : "CodePipelineIAMRoleName" }
-                        ]
-                    ]
-                },
+                "RoleName" : { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "CodePipelineIAMRole"
+                ]]},
                 "AssumeRolePolicyDocument":{
                     "Statement":[{
                         "Effect":"Allow",
@@ -285,18 +263,27 @@
                         ],
                         "Version":"2012-10-17"
                     }
-                }]
+                }],
+                "Tags" : [
+                    {"Key" : "ProjectName", "Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName", "Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
             }
         },
         "CodePipelineRoleARN": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "CodePipelineIAMRoleParameterName" }, "ARN" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "CodePipelineIAMRoleARN" 
+                ]]},
                 "Type": "String",
                 "Value" : { "Fn::GetAtt" : [ "CodePipelineIAMRole", "Arn" ] },
                 "Description": "ARN for CodePipeline IAM Role",
                 "Tags": {
-                    "Environment": {"Ref" : "EnvironmentName"},
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
                     "ProjectName": {"Ref" : "ProjectName"},
                     "SystemNumber": {"Ref" : "SystemNumber"}
                 }
@@ -313,10 +300,11 @@
             "Type":"AWS::CodeBuild::Project",
             "Properties":{
                 "Name": { 
-                    "Fn::Join" : [ "", 
+                    "Fn::Join" : [ "-", 
                         [
                             { "Ref":"ProjectName"},
-                            "-CodeBuildProject"
+                            { "Ref":"EnvironmentName"},
+                            "CodeBuildProject"
                         ]
                     ]
                 },
@@ -343,27 +331,35 @@
                 "TimeoutInMinutes":{ "Ref" : "CodeBuildTimeout" },
                 "LogsConfig" : {
                     "S3Logs" : {
-                        "Location" : { "Fn::Join" : [ "",
-                            [
-                                "arn:aws:s3:::",
-                                { "Ref" : "ArtifactBucketName" },
-                                "/codebuild-log"
-                            ]
-                        ]},
+                        "Location" : { "Fn::Join" : [ "",[
+                            "arn:aws:s3:::",
+                            { "Ref" : "ArtifactBucketName" },
+                            "/codebuild-log"
+                        ]]},
                         "Status" : "ENABLED"
                     }
-                }
+                },
+                "Tags" : [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
             }
         },
         "GithubConnection": {
             "Type": "AWS::CodeStarConnections::Connection",
             "Properties": {
-                "ConnectionName": "GithubConnection",
+                "ConnectionName": {"Fn::Join" : [ "-", [
+                        { "Ref":"ProjectName"},
+                        { "Ref":"EnvironmentName"},
+                        "GithubConnection"
+                    ]]
+                },
                 "ProviderType": "GitHub",
                 "Tags": [
-                    {"Key": "Environment","Value": "EnvironmentName"},
-                    {"Key": "ProjectName","Value": "ProjectName"},
-                    {"Key": "SystemNumber","Value": "SystemNumber"}
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
                 ]
             }
         },
@@ -371,14 +367,16 @@
             "Type":"AWS::CodePipeline::Pipeline",
             "Properties":{
                 "RoleArn": { "Fn::GetAtt" : [ "CodePipelineIAMRole", "Arn" ] },
-                "Name": { 
-                    "Fn::Join" : [ "", 
-                        [
-                            { "Ref":"ProjectName"},
-                            "-CodePipeline"
-                        ]
-                    ]
-                },
+                "Name": { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "CodePipeline"
+                ]]},
+                "Tags" : [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ],
                 "Stages":[
                     {
                         "Name":"Source",
@@ -429,12 +427,29 @@
             }
         },
         "CodeBuildStatusSQSQueue":{
-            "Type":"AWS::SQS::Queue"
+            "Type":"AWS::SQS::Queue",
+            "Properties" : {
+                "Tags" : [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ],
+                "QueueName": { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "SQSQueue"
+                ]]},
+            }
         },
         "CodeBuildStartStopCloudWatchEventRule": {
             "Type": "AWS::Events::Rule",
             "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
             "Properties": {
+                "EventBusName": { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "StartStopEventBus"
+                ]]},
                 "EventPattern": {
                     "source": [ "aws.codebuild" ], 
                     "detail-type": [ "CodeBuild Build State Change" ],
@@ -450,18 +465,21 @@
                         ]
                     }
                 },
-                "Targets": [
-                    {
-                        "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
-                        "Id": "CodeBuild-Start-Stop-Event-Trigger"
-                    }
-                ]
+                "Targets": [{
+                    "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                    "Id": "CodeBuild-Start-Stop-Event-Trigger"
+                }]
             }
         },
         "CodeBuildPhaseChangeCloudWatchEventRule": {
             "Type": "AWS::Events::Rule",
             "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
             "Properties": {
+                "EventBusName": { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "CodeBuildPhaseEventBus"
+                ]]},
                 "EventPattern": {
                     "source": [ "aws.codebuild" ], 
                     "detail-type": [ "CodeBuild Build Phase Change" ],
@@ -490,12 +508,10 @@
                         ]
                     }
                 },
-                "Targets": [
-                    {
-                        "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
-                        "Id": "CodeBuild-Phase-Change-Event-Trigger"
-                    }
-                ]
+                "Targets": [{
+                    "Arn": { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
+                    "Id": "CodeBuild-Phase-Change-Event-Trigger"
+                }]
             }
         },
         "CodeBuildStatusSQSQueuePolicy":{
@@ -523,26 +539,34 @@
         "Auth0ClientID": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
-                "Name" : {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0ClientID" ]]},
+                "Name" : {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0ClientID" 
+                ]]},
                 "Description": "Auth0 Client ID [replace w/ correct value]",
                 "GenerateSecretString": {},
                 "Tags": [
-                    {"Key": "Environment","Value": "EnvironmentName"},
-                    {"Key": "ProjectName","Value": "ProjectName"},
-                    {"Key": "SystemNumber","Value": "SystemNumber"}
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
                 ]
             }
         },
         "Auth0ClientSecret": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
-                "Name" : {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0ClientSecret" ]]},
+                "Name" : {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0ClientSecret" 
+                ]]},
                 "Description": "Auth0 Client Secret [replace w/ correct value]",
                 "GenerateSecretString": {},
                 "Tags": [
-                    {"Key": "Environment","Value": "EnvironmentName"},
-                    {"Key": "ProjectName","Value": "ProjectName"},
-                    {"Key": "SystemNumber","Value": "SystemNumber"}
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
                 ]
             }
         },
@@ -587,28 +611,36 @@
         "Auth0DomainParam": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0Domain" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0Domain" 
+                ]]},
                 "Type": "String",
                 "Value" : {"Ref" : "Auth0Domain"},
                 "Description": "Auth0 Domain",
                 "Tags": {
-                    "environment": {"Ref" : "EnvironmentName"},
-                    "project": {"Ref" : "ProjectName"},
-                    "system_number": {"Ref" : "SystemNumber"}
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
         },
         "Auth0MgmtAPIEndpointParam": {
             "Type": "AWS::SSM::Parameter",
             "Properties": {
-                "Name": {"Fn::Join" : [ "-", [{"Ref" : "ProjectName" }, "Auth0MgmtAPIEndpoint" ]]},
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0MgmtAPIEndpoint" 
+                ]]},
                 "Type": "String",
                 "Value" : {"Fn::Join" : [ "", ["https://", {"Ref" : "Auth0Domain" }, "/api/v2/" ]]},
                 "Description": "Auth0 Domain",
                 "Tags": {
-                    "environment": {"Ref" : "EnvironmentName"},
-                    "project": {"Ref" : "ProjectName"},
-                    "system_number": {"Ref" : "SystemNumber"}
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
         }
@@ -618,7 +650,7 @@
             "Value" : { "Ref" : "ProjectName" },
             "Description" : "Global project name"
         },
-        "Environment" : {
+        "EnvironmentName" : {
             "Value" : { "Ref" : "EnvironmentName" },
             "Description" : "Global environment name"
         },
