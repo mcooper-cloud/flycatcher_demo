@@ -72,6 +72,51 @@
                 "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge"
             ],
             "ConstraintDescription":"Please choose a valid instance type."
+        },
+        "WebAppVolumePath" : {
+            "Description" : "Path to the web app source code",
+            "Type": "String",
+            "Default": "/root/apps/web_app/app",
+        },
+        "WebAPIVolumePath" : {
+            "Description" : "Path to the web API source code",
+            "Type": "String",
+            "Default": "/root/apps/web_app/api",
+        },
+        "WebAppCommand" : {
+            "Description" : "Web app startup command",
+            "Type": "String",
+            "Default": "",
+        },
+        "WebAPICommand" : {
+            "Description" : "Web API startup command",
+            "Type": "String",
+            "Default": "",
+        },
+        "WebAppImage" : {
+            "Description" : "Web app docker image",
+            "Type": "String",
+            "Default": "node:15.11.0-alpine3.10",
+        },
+        "WebAPIImage" : {
+            "Description" : "Web API docker image",
+            "Type": "String",
+            "Default": "node:15.11.0-alpine3.10",
+        },
+        "StagingBucket" : {
+            "Description" : "S3 Staging bucket",
+            "Type": "String",
+            "Default": "staging_bucket",
+        },
+        "AppStagingPath" : {
+            "Description" : "S3 Staging path",
+            "Type": "String",
+            "Default": "apps/web_app/app/",
+        },
+        "APIStagingPath" : {
+            "Description" : "S3 Staging path",
+            "Type": "String",
+            "Default": "apps/web_app/api/",
         }
     },
     "Metadata" : {
@@ -348,7 +393,7 @@
                         "Name":"web-app",
                         "Cpu":"10",
                         "Essential":true,
-                        "Image":"httpd:2.4",
+                        "Image":{"Ref" : "WebAppImage"},
                         "Memory":"300",
                         "LogConfiguration": {
                             "LogDriver":"awslogs",
@@ -360,37 +405,49 @@
                         },
                         "MountPoints":[
                             {
-                                "ContainerPath":"/usr/local/apache2/htdocs",
-                                "SourceVolume":"my-vol"
+                                "ContainerPath":"/root/apps/web_app/app",
+                                "SourceVolume":"web-app-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":80}]
+                        "PortMappings":[{"ContainerPort":80}],
+                        "Command":[{"Ref" : "WebAppCommand"}],
+                        "EntryPoint":["sh","-c"],
                     },
                     {
-                        "Name":"busybox",
-                        "Cpu":10,
-                        "Command":[
-                            "/bin/sh -c \"while true; do echo '<html> <head> <title>Amazon ECS Sample App</title> <style>body {margin-top: 40px; background-color: #333;} </style> </head><body> <div style=color:white;text-align:center> <h1>Amazon ECS Sample App</h1> <h2>Congratulations!</h2> <p>Your application is now running on a container in Amazon ECS.</p>' > top; /bin/date > date ; echo '</div></body></html>' > bottom; cat top date bottom > /usr/local/apache2/htdocs/index.html ; sleep 1; done\""
-                        ],
-                        "EntryPoint":[
-                            "sh",
-                            "-c"
-                        ],
-                        "Essential":false,
-                        "Image":"busybox",
-                        "Memory":200,
-                        "LogConfiguration":{
+                        "Name":"web-api",
+                        "Cpu":"10",
+                        "Essential":true,
+                        "Image":{"Ref" : "WebAPIImage"},
+                        "Memory":"300",
+                        "LogConfiguration": {
                             "LogDriver":"awslogs",
-                            "Options":{
-                                "awslogs-group":{"Ref":"CloudwatchLogsGroup"},
-                                "awslogs-region":{"Ref":"AWS::Region"},
-                                "awslogs-stream-prefix":"ecs-demo-app"
+                            "Options": { 
+                                "awslogs-group" : {"Ref":"CloudwatchLogsGroup"},
+                                "awslogs-region" : {"Ref":"AWS::Region"},
+                                "awslogs-stream-prefix" : "ecs-demo-api"
                             }
                         },
-                        "VolumesFrom":[{"SourceContainer":"web-app"}]
+                        "MountPoints":[
+                            {
+                                "ContainerPath":"/root/apps/web_app/api",
+                                "SourceVolume":"web-api-volume"
+                            }
+                        ],
+                        "PortMappings":[{"ContainerPort":80}],
+                        "Command":[{"Ref" : "WebAPICommand"}],
+                        "EntryPoint":["sh","-c"],
                     }
                 ],
-                "Volumes":[{"Name":"my-vol"}]
+                "Volumes":[
+                    {
+                        "Name" : "web-app-volume",
+                        "Host" : {"SourcePath" : {"Ref" : "WebAppVolumePath"}}
+                    },
+                    {
+                        "Name" : "web-api-volume",
+                        "Host" : {"SourcePath" : {"Ref" : "WebAPIVolumePath"}}
+                    }
+                ]
             }
         },
         "ECSALB":{
@@ -524,17 +581,45 @@
                         "Fn::Join":["",
                             [
                                 "#!/bin/bash -xe\n",
-                                "echo ECS_CLUSTER=",
-                                {"Ref":"ECSCluster"},
-                                " >> /etc/ecs/ecs.config\n",
-                                "yum install -y aws-cfn-bootstrap\n",
-                                "/opt/aws/bin/cfn-signal -e $? ",
-                                "         --stack ",
-                                {"Ref":"AWS::StackName"},
-                                "         --resource ECSAutoScalingGroup ",
-                                "         --region ",
-                                {"Ref":"AWS::Region"},
-                                "\n"
+                                { "Fn::Sub": [ 
+                                    "echo ECS_CLUSTER=${CLUSTER} >> ${CONFIG} \n", {
+                                        "CLUSTER": {"Ref" : "ECSCluster" },
+                                        "CONFIG" : "/etc/ecs/ecs.config",
+                                    }
+                                ]},
+                                "yum install -y aws-cfn-bootstrap aws-cli\n",
+                                { "Fn::Sub": [ 
+                                    "mkdir -p ${DIR} \n", {
+                                        "DIR": {"Ref" : "WebAppVolumePath" },
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "mkdir -p ${DIR} \n", {
+                                        "DIR": {"Ref" : "WebAPIVolumePath" },
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "aws s3 sync s3://${BUCKET}/${S3_PATH} ${LOCAL_DIR} \n", {
+                                        "LOCAL_DIR": {"Ref" : "WebAppVolumePath" },
+                                        "BUCKET" : {"Ref" : "StagingBucket"},
+                                        "S3_PATH" : {"Ref" : "AppStagingPath"}
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "aws s3 sync s3://${BUCKET}/${S3_PATH} ${LOCAL_DIR} \n", {
+                                        "LOCAL_DIR": {"Ref" : "WebAPIVolumePath" },
+                                        "BUCKET" : {"Ref" : "StagingBucket"},
+                                        "S3_PATH" : {"Ref" : "APIStagingPath"}
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "${CMD} --stack ${STACK} --resource ${RESOURCE} --region ${REGION} \n", {
+                                        "CMD" : "/opt/aws/bin/cfn-signal -e $?",
+                                        "STACK" : {"Ref":"AWS::StackName"},
+                                        "RESOURCE" : "ECSAutoScalingGroup",
+                                        "REGION" : {"Ref":"AWS::Region"}
+                                    }
+                                ]},
                             ]
                         ]
                     }
@@ -676,7 +761,8 @@
                                 "ecs:StartTelemetrySession",
                                 "ecs:Submit*",
                                 "logs:CreateLogStream",
-                                "logs:PutLogEvents"
+                                "logs:PutLogEvents",
+                                "s3:*"
                             ],
                             "Resource":"*"
                         }]
