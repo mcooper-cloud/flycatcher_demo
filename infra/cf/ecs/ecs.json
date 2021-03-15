@@ -86,12 +86,12 @@
         "WebAppCommand" : {
             "Description" : "Web app startup command",
             "Type": "String",
-            "Default": "",
+            "Default": "/root/apps/web_app/app/start.sh",
         },
         "WebAPICommand" : {
             "Description" : "Web API startup command",
             "Type": "String",
-            "Default": "",
+            "Default": "/root/apps/web_app/api/start.sh",
         },
         "WebAppImage" : {
             "Description" : "Web app docker image",
@@ -102,6 +102,41 @@
             "Description" : "Web API docker image",
             "Type": "String",
             "Default": "node:15.11.0-alpine3.10",
+        },
+        "WebAppCPU" : {
+            "Description" : "Web app docker container CPU count as string",
+            "Type": "String",
+            "Default": "10",
+        },
+        "WebAPICPU" : {
+            "Description" : "Web API docker container CPU count as string",
+            "Type": "String",
+            "Default": "10",
+        },
+        "WebAppMemory" : {
+            "Description" : "Web app docker container memory count as string",
+            "Type": "String",
+            "Default": "300",
+        },
+        "WebAPIMemory" : {
+            "Description" : "Web app docker container memory count as string",
+            "Type": "String",
+            "Default": "300",
+        },
+        "WebAppPort" : {
+            "Description" : "Port the web app will listen on",
+            "Type": "Number",
+            "Default": 80,
+        },
+        "WebAPIPort" : {
+            "Description" : "Port the web API will listen on",
+            "Type": "Number",
+            "Default": 80,
+        },
+        "LoadBalancerPort" : {
+            "Description" : "Port the load balancer will listen on",
+            "Type": "Number",
+            "Default": 80,
         },
         "StagingBucket" : {
             "Description" : "S3 Staging bucket",
@@ -157,6 +192,14 @@
             "ap-northeast-1": { "AMIID": "ami-02265963d1614d04d" },
             "ap-southeast-1": { "AMIID": "ami-0b68661b29b9e058c" },
             "ap-southeast-2": { "AMIID": "ami-00e4b147599c13588" }
+        }
+    },
+    "Conditions" : {
+        "LoadBalancerProtocol" : {
+            "Fn::Equals": [
+                {"Ref": "LoadBalancerPort"},
+                80
+            ]
         }
     },
     "Resources":{
@@ -390,11 +433,15 @@
                 ],
                 "ContainerDefinitions":[
                     {
-                        "Name":"web-app",
-                        "Cpu":"10",
+                        "Name":{"Fn::Join" : [ "-", [
+                            {"Ref" : "ProjectName" }, 
+                            {"Ref" : "EnvironmentName" }, 
+                            "web-app-container" 
+                        ]]},
+                        "Cpu":{"Ref": "WebAppCPU"},
                         "Essential":true,
                         "Image":{"Ref" : "WebAppImage"},
-                        "Memory":"300",
+                        "Memory":{"Ref": "WebAppMemory"},
                         "LogConfiguration": {
                             "LogDriver":"awslogs",
                             "Options": { 
@@ -409,16 +456,20 @@
                                 "SourceVolume":"web-app-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":80}],
+                        "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAppCommand"}],
                         "EntryPoint":["sh","-c"],
                     },
                     {
-                        "Name":"web-api",
-                        "Cpu":"10",
+                        "Name":{"Fn::Join" : [ "-", [
+                            {"Ref" : "ProjectName" }, 
+                            {"Ref" : "EnvironmentName" }, 
+                            "web-api-container" 
+                        ]]},
+                        "Cpu":{"Ref": "WebAPICPU"},
                         "Essential":true,
                         "Image":{"Ref" : "WebAPIImage"},
-                        "Memory":"300",
+                        "Memory":{"Ref": "WebAPIMemory"},
                         "LogConfiguration": {
                             "LogDriver":"awslogs",
                             "Options": { 
@@ -433,7 +484,7 @@
                                 "SourceVolume":"web-api-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":80}],
+                        "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
                         "EntryPoint":["sh","-c"],
                     }
@@ -474,7 +525,7 @@
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
                     {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
                     {"Key" : "SystemNumber","Value" : {"Ref": "SystemNumber"}}
-                ]                
+                ]
             }
         },
         "ALBListener":{
@@ -488,8 +539,12 @@
                     }
                 ],
                 "LoadBalancerArn":{"Ref":"ECSALB"},
-                "Port":"80",
-                "Protocol":"HTTP"
+                "Port":{"Ref" : "LoadBalancerPort"},
+                "Protocol": { "Fn::If" : [
+                    "LoadBalancerProtocol",
+                    "HTTP",
+                    "HTTPS"
+                ]}
             }
         },
         "ECSALBListenerRule":{
@@ -523,12 +578,20 @@
                 ]]},
                 "HealthCheckIntervalSeconds":10,
                 "HealthCheckPath":"/",
-                "HealthCheckProtocol":"HTTP",
+                "HealthCheckProtocol":{ "Fn::If" : [
+                    "LoadBalancerProtocol",
+                    "HTTP",
+                    "HTTPS"
+                ]},
                 "HealthCheckTimeoutSeconds":5,
                 "HealthyThresholdCount":2,
                 "Name":"ECSTG",
-                "Port":80,
-                "Protocol":"HTTP",
+                "Port":{"Ref":"LoadBalancerPort"},
+                "Protocol":{ "Fn::If" : [
+                    "LoadBalancerProtocol",
+                    "HTTP",
+                    "HTTPS"
+                ]},
                 "UnhealthyThresholdCount":2,
                 "VpcId":{"Ref":"VPC"},
                 "Tags" : [
@@ -581,6 +644,21 @@
                         "Fn::Join":["",
                             [
                                 "#!/bin/bash -xe\n",
+                                { "Fn::Sub": [ 
+                                    "export ENVIRONMENT_NAME=${ENVIRONMENT}\n", {
+                                        "ENVIRONMENT": {"Ref" : "EnvironmentName" }
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "export PROJECT_NAME=${PROJECT}\n", {
+                                        "PROJECT": {"Ref" : "ProjectName" }
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "export SYSTEM_NUMBER=${SYSTEM}\n", {
+                                        "SYSTEM": {"Ref" : "SystemNumber" }
+                                    }
+                                ]},
                                 { "Fn::Sub": [ 
                                     "echo ECS_CLUSTER=${CLUSTER} >> ${CONFIG} \n", {
                                         "CLUSTER": {"Ref" : "ECSCluster" },
@@ -635,7 +713,7 @@
                 "LoadBalancers":[
                     {
                         "ContainerName":"web-app",
-                        "ContainerPort":"80",
+                        "ContainerPort":{"Ref":"WebAppPort"},
                         "TargetGroupArn":{"Ref":"ECSTG"}
                     }
                 ],
