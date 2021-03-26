@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-API_PATH=/root/apps/web_app/api/
+API_PATH=/opt/local/apps/web_app/api/
 
 cd $API_PATH
 npm install

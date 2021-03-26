@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-APP_PATH=/root/apps/web_app/app/
+APP_PATH=/opt/local/apps/web_app/app/
 
 
 cd $APP_PATH
