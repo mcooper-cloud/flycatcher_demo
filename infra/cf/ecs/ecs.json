@@ -76,10 +76,20 @@
         "WebAppVolumePath" : {
             "Description" : "Path to the web app source code",
             "Type": "String",
-            "Default": "/root/apps/web_app/app",
+            "Default": "/opt/local/apps/web_app/app",
         },
         "WebAPIVolumePath" : {
             "Description" : "Path to the web API source code",
+            "Type": "String",
+            "Default": "/opt/local/apps/web_app/api",
+        },
+        "WebAppContainerPath" : {
+            "Description" : "Path to the web app source code mapped to the container",
+            "Type": "String",
+            "Default": "/root/apps/web_app/app",
+        },
+        "WebAPIContainerPath" : {
+            "Description" : "Path to the web API source code mapped to the container",
             "Type": "String",
             "Default": "/root/apps/web_app/api",
         },
@@ -126,17 +136,22 @@
         "WebAppPort" : {
             "Description" : "Port the web app will listen on",
             "Type": "Number",
-            "Default": 80,
+            "Default": 7000,
         },
         "WebAPIPort" : {
             "Description" : "Port the web API will listen on",
             "Type": "Number",
-            "Default": 80,
+            "Default": 5000,
         },
         "LoadBalancerPort" : {
             "Description" : "Port the load balancer will listen on",
             "Type": "Number",
             "Default": 80,
+        },
+        "LoadBalancerHealthcheckPath" : {
+            "Description" : "Path where the load balancer will perform a healthcheck",
+            "Type": "String",
+            "Default": "/",
         },
         "StagingBucket" : {
             "Description" : "S3 Staging bucket",
@@ -452,13 +467,13 @@
                         },
                         "MountPoints":[
                             {
-                                "ContainerPath":"/root/apps/web_app/app",
+                                "ContainerPath":{"Ref":"WebAppContainerPath"},
                                 "SourceVolume":"web-app-volume"
                             }
                         ],
                         "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAppCommand"}],
-                        "EntryPoint":["sh","-c"],
+                        "EntryPoint":[],
                     },
                     {
                         "Name":{"Fn::Join" : [ "-", [
@@ -480,13 +495,13 @@
                         },
                         "MountPoints":[
                             {
-                                "ContainerPath":"/root/apps/web_app/api",
+                                "ContainerPath":{"Ref":"WebAPIContainerPath"},
                                 "SourceVolume":"web-api-volume"
                             }
                         ],
                         "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
-                        "EntryPoint":["sh","-c"],
+                        "EntryPoint":[],
                     }
                 ],
                 "Volumes":[
@@ -577,7 +592,7 @@
                     "ECS-TG"
                 ]]},
                 "HealthCheckIntervalSeconds":10,
-                "HealthCheckPath":"/",
+                "HealthCheckPath":{"Ref" : "LoadBalancerHealthcheckPath"},
                 "HealthCheckProtocol":{ "Fn::If" : [
                     "LoadBalancerProtocol",
                     "HTTP",
@@ -691,6 +706,16 @@
                                     }
                                 ]},
                                 { "Fn::Sub": [ 
+                                    "chmod +x  ${CMD} \n", {
+                                        "CMD": {"Ref" : "WebAPICommand"}
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
+                                    "chmod +x  ${CMD} \n", {
+                                        "CMD": {"Ref" : "WebAppCommand"}
+                                    }
+                                ]},
+                                { "Fn::Sub": [ 
                                     "${CMD} --stack ${STACK} --resource ${RESOURCE} --region ${REGION} \n", {
                                         "CMD" : "/opt/aws/bin/cfn-signal -e $?",
                                         "STACK" : {"Ref":"AWS::StackName"},
@@ -712,7 +737,11 @@
                 "DesiredCount":"1",
                 "LoadBalancers":[
                     {
-                        "ContainerName":"web-app",
+                        "ContainerName":{"Fn::Join" : [ "-", [
+                            {"Ref" : "ProjectName" }, 
+                            {"Ref" : "EnvironmentName" }, 
+                            "web-app-container" 
+                        ]]},
                         "ContainerPort":{"Ref":"WebAppPort"},
                         "TargetGroupArn":{"Ref":"ECSTG"}
                     }
@@ -729,6 +758,11 @@
         "ECSServiceRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
+                "RoleName":{ "Fn::Join":["-", [
+                    {"Ref": "ProjectName"}, 
+                    {"Ref": "EnvironmentName"}, 
+                    "ECSRole"
+                ]]},
                 "AssumeRolePolicyDocument":{
                     "Statement":[{
                         "Effect":"Allow",
@@ -736,7 +770,7 @@
                         "Action":["sts:AssumeRole"]
                     }]
                 },
-                "Path":"/",
+                "Path": "/",
                 "Policies":[{
                     "PolicyName":"ecs-service",
                     "PolicyDocument":{
@@ -817,6 +851,11 @@
         "EC2Role":{
             "Type":"AWS::IAM::Role",
             "Properties":{
+                "RoleName":{ "Fn::Join":["-", [
+                    {"Ref": "ProjectName"}, 
+                    {"Ref": "EnvironmentName"}, 
+                    "EC2Role"
+                ]]},
                 "AssumeRolePolicyDocument":{
                     "Statement":[{
                         "Effect":"Allow",
@@ -856,6 +895,11 @@
         "AutoscalingRole":{
             "Type":"AWS::IAM::Role",
             "Properties":{
+                "RoleName":{ "Fn::Join":["-", [
+                    {"Ref": "ProjectName"}, 
+                    {"Ref": "EnvironmentName"}, 
+                    "ASGRole"
+                ]]},
                 "AssumeRolePolicyDocument":{
                     "Statement":[{
                         "Effect":"Allow",
@@ -863,7 +907,7 @@
                         "Action":["sts:AssumeRole"]
                     }]
                 },
-                "Path":"/",
+                "Path": "/",
                 "Policies":[{
                     "PolicyName":"service-autoscaling",
                     "PolicyDocument":{
@@ -884,20 +928,19 @@
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
                     {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
                     {"Key" : "SystemNumber","Value" : {"Ref": "SystemNumber"}}
-                ]                
+                ]
             }
         },
         "EC2InstanceProfile":{
             "Type":"AWS::IAM::InstanceProfile",
             "Properties":{
-                "Path":"/",
+                "Path": "/",
                 "Roles":[{"Ref":"EC2Role"}],
                 "InstanceProfileName":{ "Fn::Join":["-", [
                     {"Ref": "ProjectName"}, 
                     {"Ref": "EnvironmentName"}, 
                     "ECS-InstanceProfile"
-                ]]},
-
+                ]]}
             }
         }
     },
