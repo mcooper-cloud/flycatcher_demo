@@ -22,6 +22,7 @@ const {
 	CLIENT_SECRET, // Auth0 Web App CLient Secret
 	SESSION_SECRET, // Cookie Encryption Key
 	PORT,
+	AUDIENCE
 } = require("./env-config");
 
 const app = express();
