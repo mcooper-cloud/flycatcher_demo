@@ -48,12 +48,12 @@ app.use(
 
 app.use(
 	auth({
-		clientID: CLIENT_ID,
 		secret: SESSION_SECRET,
 		authRequired: false,
 		auth0Logout: true,
 		baseURL: APP_URL,
 		authorizationParams: {
+			clientID: CLIENT_ID,
 			response_type: "code",
 			audience: AUDIENCE,
 			scope: "openid profile email read:reports",
