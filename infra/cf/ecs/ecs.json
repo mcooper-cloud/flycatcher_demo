@@ -17,6 +17,16 @@
             "Description": "Internal system number",
             "Default": "USER_INPUT_REQUIRED"
         },
+        "Auth0Domain": {
+            "Type": "String",
+            "Description": "Auth0 Tenant Domain",
+            "Default": "example.auth0.com"
+        },
+        "Auth0Audience": {
+            "Type": "String",
+            "Description": "Auth0 API Audience",
+            "Default": "example.auth0.com"
+        },
         "VPCCIDR" : {
             "Description" : "An available CIDR block for creating a new VPC.",
             "Type": "String",
@@ -474,6 +484,36 @@
                         "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAppCommand"}],
                         "EntryPoint":[],
+                        "Environment": [
+                            {
+                                "Name": "PROJECT_NAME",
+                                "Value": {"Ref" : "ProjectName"}
+                            },
+                            {
+                                "Name": "ENVIRONMENT_NAME",
+                                "Value": {"Ref" : "EnvironmentName"}
+                            },
+                            {
+                                "Name": "SYSTEM_NUMBER",
+                                "Value": {"Ref" : "SystemNumber"}
+                            },
+                            {
+                                "Name": "WEB_APP_PORT",
+                                "Value": {"Ref" : "WebAppPort"}
+                            },
+                            {
+                                "Name": "WEB_API_PORT",
+                                "Value": {"Ref" : "WebAPIPort"}
+                            },
+                            {
+                                "Name": "AUTH0_DOMAIN",
+                                "Value": {"Ref" : "Auth0Domain"}
+                            },
+                            {
+                                "Name": "AUTH0_AUDIENCE",
+                                "Value": {"Ref" : "Auth0Audience"}
+                            }
+                        ],
                     },
                     {
                         "Name":{"Fn::Join" : [ "-", [
@@ -502,6 +542,36 @@
                         "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
                         "EntryPoint":[],
+                        "Environment": [
+                            {
+                                "Name": "PROJECT_NAME",
+                                "Value": {"Ref" : "ProjectName"}
+                            },
+                            {
+                                "Name": "ENVIRONMENT_NAME",
+                                "Value": {"Ref" : "EnvironmentName"}
+                            },
+                            {
+                                "Name": "SYSTEM_NUMBER",
+                                "Value": {"Ref" : "SystemNumber"}
+                            },
+                            {
+                                "Name": "WEB_APP_PORT",
+                                "Value": {"Ref" : "WebAppPort"}
+                            },
+                            {
+                                "Name": "WEB_API_PORT",
+                                "Value": {"Ref" : "WebAPIPort"}
+                            },
+                            {
+                                "Name": "AUTH0_DOMAIN",
+                                "Value": {"Ref" : "Auth0Domain"}
+                            },
+                            {
+                                "Name": "AUTH0_AUDIENCE",
+                                "Value": {"Ref" : "Auth0Audience"}
+                            }
+                        ],
                     }
                 ],
                 "Volumes":[

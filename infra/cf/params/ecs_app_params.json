@@ -12,6 +12,14 @@
         "ParameterValue" : "007"
     },
     {
+        "ParameterKey" : "Auth0Domain",
+        "ParameterValue" : "example.auth0.com"
+    },
+    {
+        "ParameterKey" : "Auth0Audience",
+        "ParameterValue" : "urn:demo-api"
+    },
+    {
         "ParameterKey" : "VPCCIDR",
         "ParameterValue" : "10.0.0.0/16"
     },
