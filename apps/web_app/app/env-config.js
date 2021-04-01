@@ -4,11 +4,8 @@ const {
   WEB_APP_PORT,
   WEB_API_PORT,
   ISSUER_BASE_URL,
-//  API_URL,
   CLIENT_ID,
   CLIENT_SECRET,
-  PORT = 7000,
-  AUDIENCE = "https://longclaw-api"
 } = process.env;
 
 function session_secret(length) {
@@ -21,15 +18,14 @@ function session_secret(length) {
    return result;
 }
 
-//const appUrl = `http://localhost:${PORT}`;
-const appUrl = `http://localhost:${WEB_APP_PORT}`;
+const APP_URL = `http://localhost:${WEB_APP_PORT}`;
 const API_URL = `http://localhost:${WEB_API_PORT}`;
 
 function checkUrl() {
   return (req, res, next) => {
     const host = req.headers.host;
-    if (!appUrl.includes(host)) {
-      return res.status(301).redirect(appUrl);
+    if (!APP_URL.includes(host)) {
+      return res.status(301).redirect(APP_URL);
     }
     return next();
   };
@@ -42,13 +38,12 @@ function removeTrailingSlashFromUrl(url) {
 
 module.exports = {
   checkUrl,
-  APP_URL: appUrl,
+  APP_URL: removeTrailingSlashFromUrl(APP_URL),
   API_URL: removeTrailingSlashFromUrl(API_URL),
-//  ISSUER_BASE_URL: removeTrailingSlashFromUrl(ISSUER_BASE_URL),
   ISSUER_BASE_URL: removeTrailingSlashFromUrl(AUTH0_DOMAIN),
   CLIENT_ID: CLIENT_ID,
-  CLIENT_SECRET: CLIENT_SECRET,
+  CLIENT_SECRET: CLIENT_SECRET
   SESSION_SECRET: session_secret(64),
-//  PORT: PORT,
   PORT: WEB_APP_PORT,
+  AUDIENCE: AUTH0_AUDIENCE
 };
