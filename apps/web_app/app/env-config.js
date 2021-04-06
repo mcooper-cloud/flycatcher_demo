@@ -42,7 +42,7 @@ module.exports = {
   API_URL: removeTrailingSlashFromUrl(API_URL),
   ISSUER_BASE_URL: removeTrailingSlashFromUrl(AUTH0_DOMAIN),
   CLIENT_ID: CLIENT_ID,
-  CLIENT_SECRET: CLIENT_SECRET
+  CLIENT_SECRET: CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
   PORT: WEB_APP_PORT,
   AUDIENCE: AUTH0_AUDIENCE

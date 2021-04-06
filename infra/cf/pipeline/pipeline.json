@@ -536,15 +536,15 @@
                 "Queues":[{"Ref":"CodeBuildStatusSQSQueue"}]
             }
         },
-        "Auth0ClientID": {
+        "Auth0AppClientID": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0ClientID" 
+                    "Auth0AppClientID" 
                 ]]},
-                "Description": "Auth0 Client ID [replace w/ correct value]",
+                "Description": "Auth0 Client ID [replace w/ application ID]",
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -553,15 +553,15 @@
                 ]
             }
         },
-        "Auth0ClientSecret": {
+        "Auth0AppClientSecret": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0ClientSecret" 
+                    "Auth0AppClientSecret" 
                 ]]},
-                "Description": "Auth0 Client Secret [replace w/ correct value]",
+                "Description": "Auth0 Client Secret [replace w/ application secret]",
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -570,10 +570,10 @@
                 ]
             }
         },
-        "Auth0ClientIDResourcePolicy": {
+        "Auth0AppClientIDResourcePolicy": {
             "Type": "AWS::SecretsManager::ResourcePolicy",
             "Properties": {
-                "SecretId": {"Ref": "Auth0ClientID"},
+                "SecretId": {"Ref": "Auth0AppClientID"},
                 "ResourcePolicy": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -589,10 +589,82 @@
                 }
             }
         },
-        "Auth0ClientSecretResourcePolicy": {
+        "Auth0AppClientSecretResourcePolicy": {
             "Type": "AWS::SecretsManager::ResourcePolicy",
             "Properties": {
-                "SecretId": {"Ref": "Auth0ClientSecret"},
+                "SecretId": {"Ref": "Auth0AppClientSecret"},
+                "ResourcePolicy": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "*",
+                            "Action": "secretsmanager:*",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "Auth0DeployClientID": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+                "Name" : {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0DeployClientID" 
+                ]]},
+                "Description": "Auth0 Client ID [replace w/ application ID]",
+                "GenerateSecretString": {},
+                "Tags": [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
+            }
+        },
+        "Auth0DeployClientSecret": {
+            "Type": "AWS::SecretsManager::Secret",
+            "Properties": {
+                "Name" : {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "Auth0DeployClientSecret" 
+                ]]},
+                "Description": "Auth0 Client Secret [replace w/ application secret]",
+                "GenerateSecretString": {},
+                "Tags": [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
+            }
+        },
+        "Auth0DeployClientIDResourcePolicy": {
+            "Type": "AWS::SecretsManager::ResourcePolicy",
+            "Properties": {
+                "SecretId": {"Ref": "Auth0DeployClientID"},
+                "ResourcePolicy": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Resource": "*",
+                            "Action": "secretsmanager:*",
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "Auth0DeployClientSecretResourcePolicy": {
+            "Type": "AWS::SecretsManager::ResourcePolicy",
+            "Properties": {
+                "SecretId": {"Ref": "Auth0DeployClientSecret"},
                 "ResourcePolicy": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -682,13 +754,21 @@
             "Value" : { "Fn::GetAtt": [ "CodeBuildStatusSQSQueue", "Arn" ] },
             "Description" : "ARN of the CodeBuild status SQS Queue"
         },
-        "Auth0ClientIDARN" : {
-            "Value" : { "Ref" : "Auth0ClientID" },
-            "Description" : "The ARN of the Secret containing the Auth0 client ID"
+        "Auth0AppClientIDARN" : {
+            "Value" : { "Ref" : "Auth0AppClientID" },
+            "Description" : "The ARN of the Secret containing the Auth0 App client ID"
         },
-        "Auth0ClientSecretARN" : {
-            "Value" : { "Ref" : "Auth0ClientSecret" },
-            "Description" : "The ARN of the Secret containing the Auth0 client secret"
+        "Auth0AppClientSecretARN" : {
+            "Value" : { "Ref" : "Auth0AppClientSecret" },
+            "Description" : "The ARN of the Secret containing the Auth0 App client secret"
+        },
+        "Auth0DeployClientIDARN" : {
+            "Value" : { "Ref" : "Auth0DeployClientID" },
+            "Description" : "The ARN of the Secret containing the Auth0 Deploy client ID"
+        },
+        "Auth0DeployClientSecretARN" : {
+            "Value" : { "Ref" : "Auth0DeployClientSecret" },
+            "Description" : "The ARN of the Secret containing the Auth0 Deploy client secret"
         },
         "Auth0DomainParam" : {
             "Value" : { "Ref" : "Auth0DomainParam" },
