@@ -445,11 +445,6 @@
             "Type": "AWS::Events::Rule",
             "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
             "Properties": {
-                "EventBusName": { "Fn::Join" : [ "-", [
-                    { "Ref":"ProjectName"},
-                    { "Ref":"EnvironmentName"},
-                    "StartStopEventBus"
-                ]]},
                 "EventPattern": {
                     "source": [ "aws.codebuild" ], 
                     "detail-type": [ "CodeBuild Build State Change" ],
@@ -475,11 +470,6 @@
             "Type": "AWS::Events::Rule",
             "DependsOn" : ["CodeBuildStatusSQSQueue", "CodeBuildProject"],
             "Properties": {
-                "EventBusName": { "Fn::Join" : [ "-", [
-                    { "Ref":"ProjectName"},
-                    { "Ref":"EnvironmentName"},
-                    "CodeBuildPhaseEventBus"
-                ]]},
                 "EventPattern": {
                     "source": [ "aws.codebuild" ], 
                     "detail-type": [ "CodeBuild Build Phase Change" ],
