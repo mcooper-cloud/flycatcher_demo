@@ -52,8 +52,10 @@ app.use(
 		authRequired: false,
 		auth0Logout: true,
 		baseURL: APP_URL,
+		clientID: CLIENT_ID,
+		clientSecret: CLIENT_SECRET,
+		issuerBaseURL: ISSUER_BASE_URL,
 		authorizationParams: {
-//			clientID: CLIENT_ID,
 			response_type: "code",
 			audience: AUDIENCE,
 			scope: "openid profile email read:reports",

@@ -4,8 +4,8 @@ const {
   WEB_APP_PORT,
   WEB_API_PORT,
   ISSUER_BASE_URL,
-  CLIENT_ID,
-  CLIENT_SECRET,
+  AUTH0_CLIENT_ID,
+  AUTH0_CLIENT_SECRET,
 } = process.env;
 
 function session_secret(length) {
@@ -36,13 +36,21 @@ function removeTrailingSlashFromUrl(url) {
   return url.substring(0, url.length - 1);
 }
 
+function formatIssuerBaseURL(url) {
+  if (!url || url.startsWith("https://")) return url;
+  return 'https://' + url;
+}
+
+IBU = removeTrailingSlashFromUrl(AUTH0_DOMAIN)
+IBU = formatIssuerBaseURL(IBU)
+
 module.exports = {
   checkUrl,
   APP_URL: removeTrailingSlashFromUrl(APP_URL),
   API_URL: removeTrailingSlashFromUrl(API_URL),
-  ISSUER_BASE_URL: removeTrailingSlashFromUrl(AUTH0_DOMAIN),
-  CLIENT_ID: CLIENT_ID,
-  CLIENT_SECRET: CLIENT_SECRET,
+  ISSUER_BASE_URL: IBU,
+  CLIENT_ID: AUTH0_CLIENT_ID,
+  CLIENT_SECRET: AUTH0_CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
   PORT: WEB_APP_PORT,
   AUDIENCE: AUTH0_AUDIENCE

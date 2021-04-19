@@ -443,6 +443,44 @@
                 "RetentionInDays":14
             }
         },
+        "ECSTaskIAMRole":{
+            "Type":"AWS::IAM::Role",
+            "Properties":{
+                "RoleName" : { "Fn::Join" : [ "-", [
+                    { "Ref":"ProjectName"},
+                    { "Ref":"EnvironmentName"},
+                    "ECSTaskIAMRole"
+                ]]},
+                "AssumeRolePolicyDocument":{
+                    "Statement":[{
+                        "Effect":"Allow",
+                        "Principal":{"Service":["ecs-tasks.amazonaws.com"]},
+                        "Action":["sts:AssumeRole"]
+                    }]
+                },
+                "Path":"/",
+                "Policies":[{
+                    "PolicyName":"ecs-task-service",
+                    "PolicyDocument":{
+                        "Statement":[{
+                            "Effect":"Allow",
+                            "Action": [
+                                "kms:Decrypt",
+                                "secretsmanager:GetSecretValue",
+                                "logs:*"
+                            ],
+                            "Resource":"*"
+                        }],
+                        "Version":"2012-10-17"
+                    }
+                }],
+                "Tags" : [
+                    {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
+                    {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
+                    {"Key" : "SystemNumber", "Value" : {"Ref": "SystemNumber"}}
+                ]
+            }
+        },
         "ECSTaskDefinition":{
             "Type":"AWS::ECS::TaskDefinition",
             "Properties":{
@@ -456,6 +494,7 @@
                     {"Key" : "EnvironmentName","Value" : {"Ref": "EnvironmentName"}},
                     {"Key" : "SystemNumber","Value" : {"Ref": "SystemNumber"}}
                 ],
+                "ExecutionRoleArn": { "Fn::GetAtt" : [ "ECSTaskIAMRole", "Arn" ] },
                 "ContainerDefinitions":[
                     {
                         "Name":{"Fn::Join" : [ "-", [
@@ -525,7 +564,7 @@
                                     {"Fn::Join" : [ "-", [
                                         {"Ref" : "ProjectName" }, 
                                         {"Ref" : "EnvironmentName" },
-                                        "Auth0ClientID"
+                                        "Auth0AppClientID"
                                     ]]},
                                 ]]}
                             },
@@ -539,7 +578,7 @@
                                     {"Fn::Join" : [ "-", [
                                         {"Ref" : "ProjectName" }, 
                                         {"Ref" : "EnvironmentName" },
-                                        "Auth0ClientSecret"
+                                        "Auth0AppClientSecret"
                                     ]]},
                                 ]]}
                             }
@@ -570,7 +609,7 @@
                                 "SourceVolume":"web-api-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":{"Ref" : "WebAppPort"}}],
+                        "PortMappings":[{"ContainerPort":{"Ref" : "WebApiPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
                         "EntryPoint":[],
                         "Environment": [
