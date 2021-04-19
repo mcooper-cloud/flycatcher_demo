@@ -609,7 +609,7 @@
                                 "SourceVolume":"web-api-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":{"Ref" : "WebApiPort"}}],
+                        "PortMappings":[{"ContainerPort":{"Ref" : "WebAPIPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
                         "EntryPoint":[],
                         "Environment": [
