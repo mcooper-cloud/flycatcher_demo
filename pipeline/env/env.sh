@@ -43,7 +43,8 @@ function export_env(){
     ##
     ## application paths
     ##
-    export WEB_APP_PATH="apps/web_app/app"
+#    export WEB_APP_PATH="apps/web_app/app"
+    export WEB_APP_PATH="apps/hello"
     export WEB_API_PATH="apps/web_app/api"
 
 }
