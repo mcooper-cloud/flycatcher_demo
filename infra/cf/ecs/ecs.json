@@ -592,7 +592,7 @@
                             "web-api-container" 
                         ]]},
                         "Cpu":{"Ref": "WebAPICPU"},
-                        "Essential":true,
+                        "Essential":false,
                         "Image":{"Ref" : "WebAPIImage"},
                         "Memory":{"Ref": "WebAPIMemory"},
                         "LogConfiguration": {
@@ -609,7 +609,6 @@
                                 "SourceVolume":"web-api-volume"
                             }
                         ],
-                        "PortMappings":[{"ContainerPort":{"Ref" : "WebAPIPort"}}],
                         "Command":[{"Ref" : "WebAPICommand"}],
                         "EntryPoint":[],
                         "Environment": [
