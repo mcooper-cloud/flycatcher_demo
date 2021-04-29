@@ -29,7 +29,8 @@ function session_secret(length) {
    return result;
 }
 
-const APP_URL =`http://localhost:${PORT}`
+//const APP_URL =`http://localhost:${PORT}`
+const APP_URL =`http://localhost:${WEB_APP_PORT}`
 
 function checkUrl() {
   return (req, res, next) => {
@@ -62,5 +63,5 @@ module.exports = {
   CLIENT_ID: CLIENT_ID,
   CLIENT_SECRET: CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
-  PORT: PORT,
+  PORT: WEB_APP_PORT,
 };
