@@ -37,6 +37,8 @@ app.use(
 
 app.use(
   auth({
+    clientID: CLIENT_ID,
+    clientSecret: CLIENT_SECRET,
     secret: SESSION_SECRET,
     authRequired: false,
     auth0Logout: true,
