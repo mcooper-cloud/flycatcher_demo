@@ -141,6 +141,23 @@ describe_events(){
         --region $REGION
 }
 
+##############################################################################
+##############################################################################
+##
+## GET STACK OUTPUTS
+##
+##############################################################################
+##############################################################################
+
+
+get_stack_outputs(){
+    aws cloudformation describe-stacks \
+        --stack-name $STACK_NAME  \
+        --query "Stacks[0].Outputs" \
+        --region $REGION \
+        --output json
+}
+
 
 ##############################################################################
 ##############################################################################
@@ -169,6 +186,7 @@ main(){
         else
             echo "[+] $(date) - Stack create complete ... "
             describe_events
+            get_stack_outputs
             echo "[+] $(date) - SUCCESS! Stack deployment complete."
             return 0
         fi
