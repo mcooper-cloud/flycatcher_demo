@@ -50,8 +50,8 @@ function removeTrailingSlashFromUrl(url) {
 
 console.log("\n----------------------------------");
 console.log("Envronment Settings:");
-console.log(`CLIENT_ID: ${CLIENT_ID}`);
-if (CLIENT_SECRET) console.log(`CLIENT_SECRET: Has Value`);
+console.log(`CLIENT_ID: ${AUTH0_CLIENT_ID}`);
+if (AUTH0_CLIENT_SECRET) console.log(`CLIENT_SECRET: Has Value`);
 else console.log(`CLIENT_SECRET: Not Set`);
 console.log(`APP_URL: ${APP_URL}`);
 console.log(`SESSION_SECRET: ${SESSION_SECRET}`);
@@ -60,8 +60,8 @@ console.log("----------------------------------\n");
 module.exports = {
   checkUrl,
   APP_URL: APP_URL,
-  CLIENT_ID: CLIENT_ID,
-  CLIENT_SECRET: CLIENT_SECRET,
+  CLIENT_ID: AUTH0_CLIENT_ID,
+  CLIENT_SECRET: AUTH0_CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
   PORT: WEB_APP_PORT,
 };
