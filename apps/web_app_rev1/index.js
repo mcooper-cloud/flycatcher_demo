@@ -13,6 +13,7 @@ const {
   CLIENT_ID, // Auth0 Web App Client
   CLIENT_SECRET, // Auth0 Web App CLient Secret
   SESSION_SECRET, // Cookie Encryption Key
+  ISSUER_BASE_URL,
   PORT,
 } = require("./env-config");
 
