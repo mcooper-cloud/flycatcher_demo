@@ -40,6 +40,7 @@ app.use(
     clientID: CLIENT_ID,
     clientSecret: CLIENT_SECRET,
     secret: SESSION_SECRET,
+    issuerBaseURL: ISSUER_BASE_URL,
     authRequired: false,
     auth0Logout: true,
     baseURL: APP_URL,

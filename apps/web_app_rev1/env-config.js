@@ -3,6 +3,7 @@ const {
   WEB_APP_PORT,
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
+  AUTH0_ISSUER_BASE_URL
 } = process.env;
 
 /*
@@ -66,4 +67,5 @@ module.exports = {
   CLIENT_SECRET: AUTH0_CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
   PORT: WEB_APP_PORT,
+  ISSUER_BASE_URL: AUTH0_ISSUER_BASE_URL
 };

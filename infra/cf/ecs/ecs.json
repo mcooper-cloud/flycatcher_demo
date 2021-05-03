@@ -22,6 +22,11 @@
             "Description": "Auth0 Tenant Domain",
             "Default": "example.auth0.com"
         },
+        "Auth0IssuerBaseURL": {
+            "Type": "String",
+            "Description": "Auth0 Issuer Base URL",
+            "Default": "example.us.auth0.com"
+        },
         "Auth0Audience": {
             "Type": "String",
             "Description": "Auth0 API Audience",
@@ -549,6 +554,10 @@
                                 "Value": {"Ref" : "Auth0Domain"}
                             },
                             {
+                                "Name": "AUTH0_ISSUER_BASE_URL",
+                                "Value": {"Ref" : "Auth0IssuerBaseURL"}
+                            },
+                            {
                                 "Name": "AUTH0_AUDIENCE",
                                 "Value": {"Ref" : "Auth0Audience"}
                             }
@@ -584,63 +593,6 @@
                             }
 
                         ]
-                    },
-                    {
-                        "Name":{"Fn::Join" : [ "-", [
-                            {"Ref" : "ProjectName" }, 
-                            {"Ref" : "EnvironmentName" }, 
-                            "web-api-container" 
-                        ]]},
-                        "Cpu":{"Ref": "WebAPICPU"},
-                        "Essential":false,
-                        "Image":{"Ref" : "WebAPIImage"},
-                        "Memory":{"Ref": "WebAPIMemory"},
-                        "LogConfiguration": {
-                            "LogDriver":"awslogs",
-                            "Options": { 
-                                "awslogs-group" : {"Ref":"CloudwatchLogsGroup"},
-                                "awslogs-region" : {"Ref":"AWS::Region"},
-                                "awslogs-stream-prefix" : "ecs-demo-api"
-                            }
-                        },
-                        "MountPoints":[
-                            {
-                                "ContainerPath":{"Ref":"WebAPIContainerPath"},
-                                "SourceVolume":"web-api-volume"
-                            }
-                        ],
-                        "Command":[{"Ref" : "WebAPICommand"}],
-                        "EntryPoint":[],
-                        "Environment": [
-                            {
-                                "Name": "PROJECT_NAME",
-                                "Value": {"Ref" : "ProjectName"}
-                            },
-                            {
-                                "Name": "ENVIRONMENT_NAME",
-                                "Value": {"Ref" : "EnvironmentName"}
-                            },
-                            {
-                                "Name": "SYSTEM_NUMBER",
-                                "Value": {"Ref" : "SystemNumber"}
-                            },
-                            {
-                                "Name": "WEB_APP_PORT",
-                                "Value": {"Ref" : "WebAppPort"}
-                            },
-                            {
-                                "Name": "WEB_API_PORT",
-                                "Value": {"Ref" : "WebAPIPort"}
-                            },
-                            {
-                                "Name": "AUTH0_DOMAIN",
-                                "Value": {"Ref" : "Auth0Domain"}
-                            },
-                            {
-                                "Name": "AUTH0_AUDIENCE",
-                                "Value": {"Ref" : "Auth0Audience"}
-                            }
-                        ],
                     }
                 ],
                 "Volumes":[
