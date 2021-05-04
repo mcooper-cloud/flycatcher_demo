@@ -55,3 +55,6 @@ config(){
 }
 
 config
+ls -lah
+ls -lah .secrets 
+ls -lah .secrets/output 
