@@ -60,6 +60,19 @@ parse_args(){
 }
 
 
+prep_logs(){
+
+    ts=$(date +"%Y_%m_%d_%T" | sed -e 's/:/_/g')
+    LP="${LOG_PATH}/${STACK_NAME}/${ts}"
+
+    mkdir -p $LP
+
+    VALIDATION_LOG="${LP}/template_validation.txt"
+    EVENT_LOG="${LP}/event_log.txt"
+    OUTPUT_LOG="${LP}/output_log.txt"
+
+}
+
 ##############################################################################
 ##############################################################################
 ##
@@ -70,9 +83,10 @@ parse_args(){
 
 validate_template(){
     echo "[+] $(date) - Validating CloudFormation template ... $CF_TEMPLATE_PATH"
+    echo "[+] $(date) - Writing validation log to ${VALIDATION_LOG}"
     aws cloudformation validate-template \
         --template-body 'file://'$CF_TEMPLATE_PATH \
-        --region $REGION
+        --region $REGION > $VALIDATION_LOG
 }
 
 
@@ -136,9 +150,11 @@ wait_stack_create(){
 
 describe_events(){
     echo "[+] $(date) - Describing stack events ... $STACK_NAME"
+    echo "[+] $(date) - Writing event log to ${EVENT_LOG}"
+
     aws cloudformation describe-stack-events \
         --stack-name $STACK_NAME \
-        --region $REGION
+        --region $REGION > $EVENT_LOG
 }
 
 ##############################################################################
@@ -151,11 +167,14 @@ describe_events(){
 
 
 get_stack_outputs(){
+    echo "[+] $(date) - Describing stack outputs ... $STACK_NAME"
+    echo "[+] $(date) - Writing output log to ${OUTPUT_LOG}"
+
     aws cloudformation describe-stacks \
         --stack-name $STACK_NAME  \
         --query "Stacks[0].Outputs" \
         --region $REGION \
-        --output json
+        --output json > $OUTPUT_LOG
 }
 
 
@@ -169,6 +188,9 @@ get_stack_outputs(){
 
 
 main(){
+
+    prep_logs
+
     if ! validate_template; then
         echo "[-] $(date) - Invalid CloudFormation template ... exiting"
         return 1
