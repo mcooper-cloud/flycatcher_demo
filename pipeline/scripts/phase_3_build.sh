@@ -31,17 +31,27 @@ function auth0_deploy(){
 
 }
 
-get_stack_outputs
-get_secrets_params
+main(){
+    get_stack_outputs
+    get_secrets_params
 
-##
-## stage web app
-##
-s3_sync ./${WEB_APP_PATH} ${STAGING_BUCKET_NAME} ${WEB_APP_PATH}
+    ##
+    ## stage web app
+    ##
+    s3_sync ./${WEB_APP_PATH} ${STAGING_BUCKET_NAME} ${WEB_APP_PATH}
 
-##
-## stage web api
-##
-s3_sync ./${WEB_API_PATH} ${STAGING_BUCKET_NAME} ${WEB_API_PATH}
+    ##
+    ## stage web api
+    ##
+    s3_sync ./${WEB_API_PATH} ${STAGING_BUCKET_NAME} ${WEB_API_PATH}
 
-auth0_deploy
+    auth0_deploy
+}
+
+#main
+
+config(){
+    ./configure.py --config $CONFIG_PATH
+}
+
+config

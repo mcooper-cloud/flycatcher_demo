@@ -40,8 +40,12 @@ function auth0_export(){
 
 }
 
-get_stack_outputs
-get_secrets_params
-auth0_export
+main(){
+    get_stack_outputs
+    get_secrets_params
+    auth0_export
 
-ls -lah
+    ls -lah
+}
+
+#main

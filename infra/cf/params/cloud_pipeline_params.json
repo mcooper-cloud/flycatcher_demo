@@ -1,73 +1,68 @@
 [
     {
         "ParameterKey" : "EnvironmentName",
-        "ParameterValue" : "dev"
+        "ParameterValue" : "{{ EnvironmentName }}"
     },
     {
         "ParameterKey" : "ProjectName",
-        "ParameterValue" : "flycatcher"
+        "ParameterValue" : "{{ ProjectName }}"
     },
     {
         "ParameterKey" : "SystemNumber",
-        "ParameterValue" : "007"
+        "ParameterValue" : "{{ SystemNumber }}"
     },
     {
         "ParameterKey" : "Auth0Domain",
-        "ParameterValue" : "example.auth0.com"
+        "ParameterValue" : "{{ Auth0Domain }}"
     },
     {
         "ParameterKey" : "CodeBuildLocation",
-        "ParameterValue" : "[HTTPS CLONE URL FOR THE GITHUB REPOSITORY]"
+        "ParameterValue" : "{{ HTTPCloneUrl }}"
     },
     {
         "ParameterKey" : "ArtifactBucketName",
-        "ParameterValue" : "[S3 BUCKET WHERE ARTIFACTS WILL BE STORED]"
+        "ParameterValue" : "{{ S3ArtifactBucketName }}"
     },
     {
         "ParameterKey" : "ArtifactBucketPath",
-        "ParameterValue" : "build_artifacts"
+        "ParameterValue" : "{{ S3ArtifactBucketPath }}"
     },
     {
         "ParameterKey" : "ArtifactZipFileName",
-        "ParameterValue" : "build_artifacts.zip"
+        "ParameterValue" : "{{ ArtifactZipFileName }}"
     },
     {
         "ParameterKey" : "CodeBuildEnvType",
-        "ParameterValue" : "LINUX_CONTAINER"
+        "ParameterValue" : "{{ CodeBuildEnvType }}"
     },
     {
         "ParameterKey" : "CodeBuildComputeType",
-        "ParameterValue" : "BUILD_GENERAL1_SMALL"
+        "ParameterValue" : "{{ CodeBuildComputeType }}"
     },
     {
         "ParameterKey" : "CodeBuildImage",
-        "ParameterValue" : "aws/codebuild/amazonlinux2-x86_64-standard:3.0"
+        "ParameterValue" : "{{ CodeBuildImage }}"
     },
     {
         "ParameterKey" : "CodeBuildSpecFile",
-        "ParameterValue" : "pipeline/buildspec.yml"
+        "ParameterValue" : "{{ CodeBuildSpecFile }}"
     },
     {
         "ParameterKey" : "CodeBuildTimeout",
-        "ParameterValue" : "20"
+        "ParameterValue" : "{{ CodeBuildTimeout }}"
     },
     {
         "ParameterKey" : "CodeBuildType",
-        "ParameterValue" : "GITHUB"
+        "ParameterValue" : "{{ CodeBuildType }}"
     },
     {
         "ParameterKey" : "RepoName",
-        "ParameterValue" : "[NAME OF THE GITHUB REPO INCLUDING THE OWNER]"
+        "ParameterValue" : "{{ RepoName }}"
     },
     {
         "ParameterKey" : "RepoBranch",
-        "ParameterValue" : "master"
+        "ParameterValue" : "{{ RepoBranch }}"
     }
 ]
-
-
-
-
-
 
 

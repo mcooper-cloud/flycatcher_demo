@@ -1,26 +1,26 @@
 [
     {
         "ParameterKey" : "EnvironmentName",
-        "ParameterValue" : "dev"
+        "ParameterValue" : "{{ EnvironmentName }}"
     },
     {
         "ParameterKey" : "ProjectName",
-        "ParameterValue" : "flycatcher"
+        "ParameterValue" : "{{ ProjectName }}"
     },
     {
         "ParameterKey" : "SystemNumber",
-        "ParameterValue" : "007"
+        "ParameterValue" : "{{ SystemNumber }}"
     },
     {
         "ParameterKey" : "Domain",
-        "ParameterValue" : "example.com"
+        "ParameterValue" : "{{ Domain }}"
     },
     {
         "ParameterKey" : "BucketVersionStatus",
-        "ParameterValue" : "[ Suspended | Enabled ]"
+        "ParameterValue" : "{{ BucketVersionStatus }}"
     },
     {
         "ParameterKey" : "KMSKeyARN",
-        "ParameterValue" : "[OPTIONAL KMS KEY ARN]"
+        "ParameterValue" : "{{ KMSKeyARN }}"
     }
 ]

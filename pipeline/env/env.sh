@@ -10,6 +10,7 @@ function export_env(){
     export PIPELINE_STACK_NAME="flycatcher-cicd-pipeline"
     export STAGING_STACK_NAME="flycatcher-staging-bucket"
 
+    export CONFIG_PATH="config/config.conf"
 
     ##
     ## general stack output variable names
@@ -105,7 +106,7 @@ function get_stack_outputs(){
     get_cf_outputs $STAGING_STACK_NAME
 
     echo "[+] Cloudformation outputs for ${STAGING_STACK_NAME}"
-    echo ${cf_JSON} | jq -rc '.[]'
+#    echo ${CF_JSON} | jq -rc '.[]'
     export STAGING_BUCKET_NAME=$(echo ${CF_JSON} | jq --arg VAR ${STAGING_BUCKET_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
 }
@@ -145,33 +146,6 @@ function get_parameter(){
 ##############################################################################
 ##
 ## get Secrets Manager and SSM Parameter Store values
-##
-##############################################################################
-##############################################################################
-
-
-function get_secrets_params(){
-    get_secret $AUTH0_CLIENT_ID_SM AUTH0_CLIENT_ID
-    echo "[+] Auth0 Client ID: ${AUTH0_CLIENT_ID}"
-
-    get_secret $AUTH0_CLIENT_SECRET_SM AUTH0_CLIENT_SECRET
-    echo "[+] Auth0 Client Secret: ********$(echo ${AUTH0_CLIENT_SECRET} | grep -o '....$')"
-
-    get_parameter $AUTH0_DOMAIN_PARAM AUTH0_DOMAIN
-    echo "[+] Auth0 Domain: ${AUTH0_DOMAIN}"
-
-    get_parameter $AUTH0_MGMT_API_ENDPOINT_PARAM AUTH0_MGMT_API_ENDPOINT
-    echo "[+] Auth0 Management API Endpoint: ${AUTH0_MGMT_API_ENDPOINT}"
-
-    export AUTH0_SUBDOMAIN=$(echo ${AUTH0_DOMAIN} | cut -d'.' -f1)
-    echo "[+] Auth0 Subdomain: ${AUTH0_SUBDOMAIN}"
-}
-
-
-##############################################################################
-##############################################################################
-##
-## bundeled get Secrets Manager and SSM Parameter Store values
 ##
 ##############################################################################
 ##############################################################################

@@ -1,50 +1,102 @@
 [
     {
         "ParameterKey" : "EnvironmentName",
-        "ParameterValue" : "dev"
+        "ParameterValue" : "{{ EnvironmentName }}"
     },
     {
         "ParameterKey" : "ProjectName",
-        "ParameterValue" : "flycatcher"
+        "ParameterValue" : "{{ ProjectName }}"
     },
     {
         "ParameterKey" : "SystemNumber",
-        "ParameterValue" : "007"
+        "ParameterValue" : "{{ SystemNumber }}"
     },
     {
         "ParameterKey" : "Auth0Domain",
-        "ParameterValue" : "example.auth0.com"
+        "ParameterValue" : "{{ Auth0Domain }}"
     },
     {
         "ParameterKey" : "Auth0Audience",
-        "ParameterValue" : "urn:demo-api"
+        "ParameterValue" : "{{ Auth0Audience }}"
     },
     {
         "ParameterKey" : "VPCCIDR",
-        "ParameterValue" : "10.0.0.0/16"
+        "ParameterValue" : "{{ VPCCIDR }}"
     },
     {
         "ParameterKey" : "SubnetOneCIDR",
-        "ParameterValue" : "10.0.1.0/24"
+        "ParameterValue" : "{{ SubnetOneCIDR }}"
     },
     {
         "ParameterKey" : "SubnetTwoCIDR",
-        "ParameterValue" : "10.0.2.0/24"
+        "ParameterValue" : "{{ SubnetTwoCIDR }}"
     },
     {
         "ParameterKey" : "KeyName",
-        "ParameterValue" : "flycatcher-ssh"
+        "ParameterValue" : "{{ SSHKeyName }}"
     },
     {
         "ParameterKey" : "DesiredCapacity",
-        "ParameterValue" : "1"
+        "ParameterValue" : "{{ DesiredCapacity }}"
     },
     {
         "ParameterKey" : "MaxSize",
-        "ParameterValue" : "1"
+        "ParameterValue" : "{{ MaxSize }}"
     },
     {
         "ParameterKey" : "InstanceType",
-        "ParameterValue" : "t2.micro"
+        "ParameterValue" : "{{ Instance Type }}"
+    },
+    {
+        "ParameterKey" : "WebAppVolumePath",
+        "ParameterValue" : "{{ WebAppVolumePath }}"
+    },
+    {
+        "ParameterKey" : "WebAPIVolumePath",
+        "ParameterValue" : "{{ WebAPIVolumePath }}"
+    },
+    {
+        "ParameterKey" : "WebAppContainerPath",
+        "ParameterValue" : "{{ WebAppContainerPath }}"
+    },
+    {
+        "ParameterKey" : "WebAPIContainerPath",
+        "ParameterValue" : "{{ WebAPIContainerPath }}"
+    },
+    {
+        "ParameterKey" : "WebAppCommand",
+        "ParameterValue" : "{{ WebAppStartCommand }}" 
+    },
+    {
+        "ParameterKey" : "WebAPICommand",
+        "ParameterValue" : "{{ WebAPIStartCommand }}"
+    },
+    {
+        "ParameterKey" : "WebAppImage",
+        "ParameterValue" : "{{ WebAppImage }}"
+    },
+    {
+        "ParameterKey" : "WebAPIImage",
+        "ParameterValue" : "{{ WebAPIImage }}"
+    },
+    {
+        "ParameterKey" : "StagingBucket",
+        "ParameterValue" : "{{ S3StagingBucket }}"
+    },
+    {
+        "ParameterKey" : "AppStagingPath",
+        "ParameterValue" : "{{ AppStagingPath }}"
+    },
+    {
+        "ParameterKey" : "APIStagingPath",
+        "ParameterValue" : "{{ APIStagingPath }}"
+    },
+    {
+        "ParameterKey" : "WebAppPort",
+        "ParameterValue" : "{{ WebAppPort }}"
+    },
+    {
+        "ParameterKey" : "WebAPIPort",
+        "ParameterValue" : "{{ WebAPIPort }}"
     }
 ]
