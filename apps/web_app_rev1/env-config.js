@@ -3,8 +3,10 @@ const {
   WEB_APP_PORT,
   AUTH0_CLIENT_ID,
   AUTH0_CLIENT_SECRET,
-  AUTH0_ISSUER_BASE_URL
+  AUTH0_ISSUER_BASE_URL,
+  LOAD_BALANCER_DNS
 } = process.env;
+
 
 /*
 const {
@@ -20,6 +22,7 @@ const {
 } = process.env;
 */
 
+
 function session_secret(length) {
    var result           = '';
    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -30,8 +33,10 @@ function session_secret(length) {
    return result;
 }
 
+
 //const APP_URL =`http://localhost:${PORT}`
 const APP_URL =`http://localhost:${WEB_APP_PORT}`
+const LB_APP_URL = ['http://', LOAD_BALANCER_DNS].join('');
 
 function checkUrl() {
   return (req, res, next) => {
@@ -43,9 +48,9 @@ function checkUrl() {
   };
 }
 
+
 function removeTrailingSlashFromUrl(url) {
   if (!url || !url.endsWith("/")) return url;
-
   return url.substring(0, url.length - 1);
 }
 
@@ -62,7 +67,8 @@ console.log("----------------------------------\n");
 
 module.exports = {
   checkUrl,
-  APP_URL: APP_URL,
+//  APP_URL: APP_URL,
+  APP_URL: LB_APP_URL,
   CLIENT_ID: AUTH0_CLIENT_ID,
   CLIENT_SECRET: AUTH0_CLIENT_SECRET,
   SESSION_SECRET: session_secret(64),
