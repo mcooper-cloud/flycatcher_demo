@@ -560,6 +560,10 @@
                             {
                                 "Name": "AUTH0_AUDIENCE",
                                 "Value": {"Ref" : "Auth0Audience"}
+                            },
+                            {
+                                "Name": "LOAD_BALANCER_DNS",
+                                "Value": {"Fn::GetAtt":["ECSALB","DNSName"]}
                             }
                         ],
                         "secrets": [
@@ -591,7 +595,6 @@
                                     ]]},
                                 ]]}
                             }
-
                         ]
                     }
                 ],
