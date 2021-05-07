@@ -31,6 +31,19 @@ function auth0_deploy(){
 
 }
 
+function app_deploy(){
+
+    ./deploy.sh --env-file $APP_ENV_PATH
+
+}
+
+function app_deploy(){
+
+    ./teardown.sh --env-file $APP_ENV_PATH
+
+}
+
+
 main(){
     get_stack_outputs
     get_secrets_params
@@ -46,6 +59,7 @@ main(){
     s3_sync ./${WEB_API_PATH} ${STAGING_BUCKET_NAME} ${WEB_API_PATH}
 
     auth0_deploy
+    app_deploy
 }
 
-#main
+main

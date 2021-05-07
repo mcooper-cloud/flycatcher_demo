@@ -21,7 +21,3 @@ config(){
 install_auth0_deploy_cli
 install_configure
 config
-
-ls -lah
-ls -lah .secrets 
-ls -lah .secrets/output 
