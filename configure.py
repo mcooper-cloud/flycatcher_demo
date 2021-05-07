@@ -152,9 +152,15 @@ class ConfigBuilder(object):
 #                    path = conf[paths_section_name][param_path_option_name]
 #                    path = os.path.join(working_dir, path)
 
-                    s = conf[paths_section_name][param_path_option_name]
-                    print(s)
-                    path_list = json.loads(s)
+                    try:
+                        s = conf[paths_section_name][param_path_option_name]
+                        print(s)
+                        path_list = json.loads(s)
+
+                    except Exception as e:
+
+                        print('[-] ParameterPath config option must be a list: {}'.format(e))
+                        exit(1)
 
                     ##
                     ## set output path if it's in the config ... 
