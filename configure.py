@@ -153,6 +153,7 @@ class ConfigBuilder(object):
 #                    path = os.path.join(working_dir, path)
 
                     s = conf[paths_section_name][param_path_option_name]
+                    print(s)
                     path_list = json.loads(s)
 
                     ##
@@ -198,7 +199,12 @@ class ConfigBuilder(object):
 
                     try:
                         for o in conf[params_section_name]:
-                            kwargs[o] = conf[params_section_name][o]
+                            ##
+                            ## strip leading and traling quotes
+                            ##
+                            s = conf[params_section_name][o].lstrip('\"')
+                            s = s.rstrip('\"')
+                            kwargs[o] = s
 
                         with open(p) as file_:
 
