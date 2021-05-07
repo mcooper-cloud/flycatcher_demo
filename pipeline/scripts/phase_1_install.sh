@@ -14,5 +14,14 @@ install_configure(){
     pip3 install -r requirements.txt
 }
 
+config(){
+    ./configure.py --config $CONFIG_PATH
+}
+
 install_auth0_deploy_cli
 install_configure
+config
+
+ls -lah
+ls -lah .secrets 
+ls -lah .secrets/output 

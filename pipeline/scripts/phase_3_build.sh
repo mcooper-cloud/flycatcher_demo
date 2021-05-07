@@ -49,12 +49,3 @@ main(){
 }
 
 #main
-
-config(){
-    ./configure.py --config $CONFIG_PATH
-}
-
-config
-ls -lah
-ls -lah .secrets 
-ls -lah .secrets/output 
