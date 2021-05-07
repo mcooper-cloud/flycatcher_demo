@@ -12,6 +12,7 @@ import os
 import argparse
 from configparser import ConfigParser, ExtendedInterpolation
 import jinja2
+import json
 
 
 ###############################################################################
@@ -148,9 +149,11 @@ class ConfigBuilder(object):
 
                     param_file_list = []
 
-                    path = conf[paths_section_name][param_path_option_name]
-                    path = os.path.join(working_dir, path)
+#                    path = conf[paths_section_name][param_path_option_name]
+#                    path = os.path.join(working_dir, path)
 
+                    s = conf[paths_section_name][param_path_option_name]
+                    path_list = json.loads(s)
 
                     ##
                     ## set output path if it's in the config ... 
@@ -159,26 +162,29 @@ class ConfigBuilder(object):
                     if output_option_name in conf[paths_section_name]:
                         out_path = conf[paths_section_name][output_option_name]
 
+                    for path in path_list:
 
-                    if os.path.isfile(path):
+                        path = os.path.join(working_dir, path)
 
-                        print('[+] Using param file {}'.format(path))
-                        param_file_list.append(path)
+                        if os.path.isfile(path):
+
+                            print('[+] Using param file {}'.format(path))
+                            param_file_list.append(path)
 
 
-                    elif os.path.isdir(path):
+                        elif os.path.isdir(path):
 
-                        print('[+] Using param file path {}'.format(path))
+                            print('[+] Using param file path {}'.format(path))
 
-                        for root, dirs, files in os.walk(path, topdown=False):
-                            for name in files:
+                            for root, dirs, files in os.walk(path, topdown=False):
+                                for name in files:
 
-                                print('[+] Found config file {}'.format(os.path.join(path, name)))
+                                    print('[+] Found config file {}'.format(os.path.join(path, name)))
 
-                                ##
-                                ## handle multi-config here
-                                ##
-                                param_file_list.append(os.path.join(path, name))
+                                    ##
+                                    ## handle multi-config here
+                                    ##
+                                    param_file_list.append(os.path.join(path, name))
 
 
                 for p in param_file_list:
