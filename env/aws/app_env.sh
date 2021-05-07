@@ -10,8 +10,8 @@ export_env(){
     ##########################################################################
 
 
-    export STACK_NAME="flycatcher-ecs-app"
-    export REGION='us-east-1'
+    export STACK_NAME="{{ AppStackName }}"
+    export REGION='{{ Region }}'
 
 
     ##########################################################################
@@ -24,10 +24,10 @@ export_env(){
 
 
     export WORKING_DIR=$(pwd)
-    export INFRA_PATH='infra/cf'
-    export PARAM_PATH='infra/cf/params'
+    export INFRA_PATH='infra/aws'
+    export PARAM_PATH='infra/aws/params'
     export CF_TEMPLATE_PATH=$INFRA_PATH'/ecs/ecs.json'
-    export CF_PARAM_PATH=$PARAM_PATH'/ecs_app_params.json'
+    export CF_PARAM_PATH=$PARAM_PATH'/app_params.json'
 
 }
 

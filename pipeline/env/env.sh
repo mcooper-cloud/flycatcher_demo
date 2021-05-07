@@ -20,6 +20,13 @@ function export_env(){
     export APP_STACK_NAME="{{ AppStackName }}"
 
     ##
+    ## env paths
+    ##
+    export PIPELINE_ENV_PATH={{ PipelineEnvPath }}
+    export STAGING_ENV_PATH={{ StagingEnvPath }}
+    export APP_ENV_PATH={{ AppEnvPath }}
+
+    ##
     ## Auth0 paths
     ##
     export AUTH0_EXPORT_PATH={{ Auth0ExportPath }}
