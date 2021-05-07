@@ -228,8 +228,8 @@ class ConfigBuilder(object):
                                 basename = os.path.basename(p)
                                 param_out_file = os.path.join(out_path, basename)
 
-                            else:
-                                param_out_file = '.'.join([p, 'out'])
+#                            else:
+#                                param_out_file = '.'.join([p, 'out'])
 
                             print('[+] Writing template output to {}'.format(param_out_file))
                             with open(param_out_file, 'wb+') as f:
