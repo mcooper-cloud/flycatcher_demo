@@ -3,7 +3,7 @@ hooks: []
 pages: []
 resourceServers:
   - name: Demo Resource Server
-    identifier: 'urn:demo-api'
+    identifier: '##AUTH0_AUDIENCE##'
     allow_offline_access: false
     signing_alg: RS256
     skip_consent_for_verifiable_first_party_clients: true
@@ -32,9 +32,11 @@ clients:
     allowed_clients: []
     allowed_logout_urls:
       - 'https://##AUTH0_SUBDOMAIN##.us.webtask.run/auth0-authentication-api-debugger'
+      - '##AUTH0_LOGOUT_URL##'
     app_type: regular_web
     callbacks:
       - 'https://##AUTH0_SUBDOMAIN##.us.webtask.run/auth0-authentication-api-debugger'
+      - '##AUTH0_CALLBACK_URL##'
     client_aliases: []
     cross_origin_auth: false
     custom_login_page_on: true
@@ -89,7 +91,7 @@ clients:
     sso_disabled: false
     token_endpoint_auth_method: client_secret_post
 databases:
-  - name: "##AUTH0_SUBDOMAIN##-customers"
+  - name: "##PROJECT_NAME##-customers"
     strategy: auth0
     enabled_clients:
       - auth0-deploy-cli
@@ -118,7 +120,7 @@ databases:
         min_length: 1
       enabledDatabaseCustomization: false
     realms:
-      - "##AUTH0_SUBDOMAIN##-customers"
+      - "##PROJECT_NAME##-customers"
 connections: []
 tenant:
   enabled_locales:
@@ -132,7 +134,7 @@ tenant:
     disable_clickjack_protection_headers: false
   friendly_name: "##PROJECT_NAME##"
   picture_url: >-
-      https://example.com/logo.jpg
+      '##LOGO_URL##'
   support_email: ''
   support_url: ''
   universal_login:
@@ -333,7 +335,7 @@ branding:
     page_background: '#FFFFFF'
     primary: '#0D2769'
   logo_url: >-
-      https://example.com/logo.jpg
+      '##LOGO_URL##'
 prompts:
   universal_login_experience: new
 migrations: {}

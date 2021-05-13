@@ -14,6 +14,10 @@ const config = {
         "SYSTEM_NUMBER": process.env.SYSTEM_NUMBER,
         "AUTH0_SUBDOMAIN": process.env.AUTH0_SUBDOMAIN,
         "AUTH0_MGMT_API_ENDPOINT": process.env.AUTH0_MGMT_API_ENDPOINT,
+        "AUTH0_CALLBACK_URL" : process.env.AUTH0_CALLBACK_URL,
+        "AUTH0_LOGOUT_URL" : process.env.AUTH0_LOGOUT_URL,
+        "AUTH0_AUDIENCE" : process.env.AUTH0_AUDIENCE
+        "LOGO_URL" : process.env.LOGO_URL
     },
 };
 
