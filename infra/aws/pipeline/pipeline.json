@@ -22,6 +22,11 @@
             "Description": "Internal system number",
             "Default": "USER_INPUT_REQUIRED"
         },
+        "LogoURL": {
+            "Type": "String",
+            "Description": "Logo URL",
+            "Default": "USER_INPUT_REQUIRED"
+        },
         "Auth0Domain": {
             "Type": "String",
             "Description": "Auth0 Tenant Domain",
@@ -744,7 +749,31 @@
                     "SystemNumber": {"Ref" : "SystemNumber"}
                 }
             }
-        }
+        },
+        "LogoURLParam": {
+            "Type": "AWS::SSM::Parameter",
+            "Properties": {
+                "Name": {"Fn::Join" : [ "-", [
+                    {"Ref" : "ProjectName" }, 
+                    {"Ref" : "EnvironmentName" }, 
+                    "LogoURL" 
+                ]]},
+                "Type": "String",
+                "Value" : {"Ref" : "LogoURL"},
+                "Description": {"Fn::Join" : [" ", [
+                        "Logo for project",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                    ]]
+                },
+                "Tags": {
+                    "EnvironmentName": {"Ref" : "EnvironmentName"},
+                    "ProjectName": {"Ref" : "ProjectName"},
+                    "SystemNumber": {"Ref" : "SystemNumber"}
+                }
+            }
+        },
     },
     "Outputs" : {
         "ProjectName" : {
@@ -758,6 +787,10 @@
         "SystemNumber" : {
             "Value" : { "Ref" : "SystemNumber" },
             "Description" : "Global system number"
+        },
+        "LogoURL": {
+            "Description": "Logo URL",
+            "Value": {"Ref": "LogoURL"}
         },
         "CodeBuildIAMRoleARN" : {
             "Value" : { "Fn::GetAtt" : [ "CodeBuildIAMRole", "Arn" ] },
@@ -798,6 +831,10 @@
         "Auth0MGMTClientSecretARN" : {
             "Value" : { "Ref" : "Auth0MGMTClientSecret" },
             "Description" : "The ARN of the Secret containing the Auth0 Deploy client secret"
+        },
+        "LogoURLParam" : {
+            "Value" : { "Ref" : "LogoURLParam" },
+            "Description" : "The name of the SSM Param holding the Logo URL"
         },
         "Auth0DomainParam" : {
             "Value" : { "Ref" : "Auth0DomainParam" },
