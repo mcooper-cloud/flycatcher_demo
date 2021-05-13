@@ -28,6 +28,7 @@ export_env(){
     export PARAM_PATH='infra/aws/params'
     export CF_TEMPLATE_PATH=$INFRA_PATH'/s3/bucket.json'
     export CF_PARAM_PATH=$PARAM_PATH'/staging_params.json'
+    export LOG_PATH=$WORKING_DIR'/logs/'
 
 }
 
