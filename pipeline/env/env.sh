@@ -9,6 +9,11 @@ function export_env(){
 
     export CONFIG_PATH="config/config.conf"
 
+    export PROJECT_NAME="{{ ProjectName }}"
+    export ENVIRONMENT="{{ EnvironmentName }}"
+    export SYSTEM_NUMBER="{{ SystemNumber }}"
+
+
     ##
     ## config will run first, and the Jinja values below will
     ## change and be written to place.  Directly modifying this
@@ -43,9 +48,9 @@ function export_env(){
     ##
     ## general stack output variable names
     ##
-    export PROJECT_NAME_OUTPUT="ProjectName"
-    export ENVIRONMENT_OUTPUT="EnvironmentName"
-    export SYSTEM_NUMBER_OUTPUT="SystemNumber"
+#    export PROJECT_NAME_OUTPUT="ProjectName"
+#    export ENVIRONMENT_OUTPUT="EnvironmentName"
+#    export SYSTEM_NUMBER_OUTPUT="SystemNumber"
 
     ##
     ## Cloudformation outputs used to dynamically retrieve Auth0 
@@ -55,6 +60,10 @@ function export_env(){
     export AUTH0_CLIENT_SECRET_OUTPUT="Auth0MGMTClientSecretARN"
     export AUTH0_DOMAIN_PARAM_OUTPUT="Auth0DomainParam"
     export AUTH0_MGMT_API_ENDPOINT_OUTPUT="Auth0MgmtAPIEndpointParam"
+    export AUTH0_CALLBACK_URL_OUTPUT="Auth0CallbackURL"
+    export AUTH0_LOGOUT_URL_OUTPUT="Auth0LogoutURL"
+
+    export LOGO_URL_OUTPUT="LogoURL"
 
     export STAGING_BUCKET_NAME_OUTPUT="BucketName"
     export STAGING_BUCKET_EXPORT_PATH="a0export"
@@ -89,7 +98,7 @@ function get_cf_outputs(){
 ##############################################################################
 
 
-function get_stack_outputs(){
+function get_pipeline_stack_outputs(){
 
     ##
     ## Pipeline stack outputs
@@ -105,10 +114,15 @@ function get_stack_outputs(){
     export AUTH0_DOMAIN_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_DOMAIN_PARAM_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
     export AUTH0_MGMT_API_ENDPOINT_PARAM=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_MGMT_API_ENDPOINT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
-    export PROJECT_NAME=$(echo ${CF_JSON} | jq --arg VAR ${PROJECT_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-    export ENVIRONMENT=$(echo ${CF_JSON} | jq --arg VAR ${ENVIRONMENT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
-    export SYSTEM_NUMBER=$(echo ${CF_JSON} | jq --arg VAR ${SYSTEM_NUMBER_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export LOGO_URL=$(echo ${CF_JSON} | jq --arg VAR ${LOGO_URL_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 
+#    export PROJECT_NAME=$(echo ${CF_JSON} | jq --arg VAR ${PROJECT_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+#    export ENVIRONMENT=$(echo ${CF_JSON} | jq --arg VAR ${ENVIRONMENT_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+#    export SYSTEM_NUMBER=$(echo ${CF_JSON} | jq --arg VAR ${SYSTEM_NUMBER_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+
+}
+
+function get_staging_stack_outputs(){
     ##
     ## staging bucket stack outputs
     ## ... this is where we'll get the bucket name
@@ -117,7 +131,19 @@ function get_stack_outputs(){
 
     echo "[+] Cloudformation outputs for ${STAGING_STACK_NAME}"
     export STAGING_BUCKET_NAME=$(echo ${CF_JSON} | jq --arg VAR ${STAGING_BUCKET_NAME_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+}
 
+
+function get_app_stack_outputs(){
+    ##
+    ## staging bucket stack outputs
+    ## ... this is where we'll get the bucket name
+    ##
+    get_cf_outputs $APP_STACK_NAME
+
+    echo "[+] Cloudformation outputs for ${APP_STACK_NAME}"
+    export AUTH0_CALLBACK_URL=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_CALLBACK_URL_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
+    export AUTH0_LOGOUT_URL=$(echo ${CF_JSON} | jq --arg VAR ${AUTH0_LOGOUT_URL_OUTPUT} -rc '.[] | select(.OutputKey==$VAR) | .OutputValue')
 }
 
 

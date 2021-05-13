@@ -41,7 +41,7 @@ function auth0_export(){
 }
 
 main(){
-    get_stack_outputs
+    get_staging_stack_outputs
     get_secrets_params
     auth0_export
 

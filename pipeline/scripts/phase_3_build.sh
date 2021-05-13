@@ -37,7 +37,7 @@ function app_deploy(){
 
 }
 
-function app_deploy(){
+function app_teardown(){
 
     ./teardown.sh --env-file $APP_ENV_PATH
 
@@ -45,7 +45,8 @@ function app_deploy(){
 
 
 main(){
-    get_stack_outputs
+    get_pipeline_stack_outputs
+    get_staging_stack_outputs
     get_secrets_params
 
     ##
