@@ -17,6 +17,11 @@
             "Description": "Internal system number",
             "Default": "USER_INPUT_REQUIRED"
         },
+        "LogoURL": {
+            "Type": "String",
+            "Description": "Logo URL",
+            "Default": "USER_INPUT_REQUIRED"
+        },
         "Auth0Domain": {
             "Type": "String",
             "Description": "Auth0 Tenant Domain",
@@ -1051,6 +1056,10 @@
             "Description": "System number",
             "Value": {"Ref": "SystemNumber"}
         },
+        "LogoURL": {
+            "Description": "Logo URL",
+            "Value": {"Ref": "LogoURL"}
+        },
         "VPCCIDR" : {
             "Value" : { "Fn::GetAtt" : [ "VPC", "CidrBlock" ] },
             "Description" : "VPC CIDR Range"
@@ -1100,6 +1109,22 @@
         "ECSALBDNSName":{
             "Description":"Your ALB DNS URL",
             "Value":{ "Fn::Join":["",[{"Fn::GetAtt":["ECSALB","DNSName"]}]]}
+        },
+        "Auth0CallbackURL":{
+            "Description":"Auth0 callback URL (for dynamic tenant configuration)",
+            "Value":{ "Fn::Join":["",[
+                "https://"
+                {"Fn::GetAtt":["ECSALB","DNSName"]},
+                "/callback"
+            ]]}
+        },
+        "Auth0LogoutURL":{
+            "Description":"Auth0 logout URL (for dynamic tenant configuration)",
+            "Value":{ "Fn::Join":["",[
+                "https://"
+                {"Fn::GetAtt":["ECSALB","DNSName"]},
+                "/logout"
+            ]]}
         },
     }
 }
