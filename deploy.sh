@@ -71,6 +71,11 @@ prep_logs(){
     EVENT_LOG="${LP}/event_log.txt"
     OUTPUT_LOG="${LP}/output_log.txt"
 
+    ERR_VALIDATION_LOG="${LP}/err_template_validation.txt"
+    ERR_EVENT_LOG="${LP}/err_event_log.txt"
+    ERR_OUTPUT_LOG="${LP}/err_output_log.txt"
+
+
 }
 
 ##############################################################################
@@ -86,7 +91,7 @@ validate_template(){
     echo "[+] $(date) - Writing validation log to ${VALIDATION_LOG}"
     aws cloudformation validate-template \
         --template-body 'file://'$CF_TEMPLATE_PATH \
-        --region $REGION > $VALIDATION_LOG
+        --region $REGION > $VALIDATION_LOG 2> $ERR_VALIDATION_LOG
 }
 
 
@@ -154,7 +159,7 @@ describe_events(){
 
     aws cloudformation describe-stack-events \
         --stack-name $STACK_NAME \
-        --region $REGION > $EVENT_LOG
+        --region $REGION > $EVENT_LOG 2> $ERR_EVENT_LOG
 }
 
 ##############################################################################
@@ -174,7 +179,7 @@ get_stack_outputs(){
         --stack-name $STACK_NAME  \
         --query "Stacks[0].Outputs" \
         --region $REGION \
-        --output json > $OUTPUT_LOG
+        --output json > $OUTPUT_LOG 2> $ERR_OUTPUT_LOG
 }
 
 
