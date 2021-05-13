@@ -532,9 +532,15 @@
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0AppClientID" 
+                    "Auth0-App-ClientID" 
                 ]]},
-                "Description": "Auth0 Client ID [replace w/ application ID]",
+                "Description": {"Fn::Join" : [" ", [
+                    "Auth0 application Client ID for project",
+                    {"Ref" : "ProjectName" }, 
+                    "-",
+                    {"Ref" : "EnvironmentName" }, 
+                    "[replace w/ application client ID]",
+                ]]},
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -549,9 +555,16 @@
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0AppClientSecret" 
+                    "Auth0-App-ClientSecret" 
                 ]]},
-                "Description": "Auth0 Client Secret [replace w/ application secret]",
+                "Description": {"Fn::Join" : [" ", [
+                        "Auth0 application Client Secrets for project",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                        "[replace w/ application client secret]",
+                    ]]
+                },
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -598,15 +611,22 @@
                 }
             }
         },
-        "Auth0DeployClientID": {
+        "Auth0MGMTClientID": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0DeployClientID" 
+                    "Auth0-MGMT-ClientID" 
                 ]]},
-                "Description": "Auth0 Client ID [replace w/ application ID]",
+                "Description": {"Fn::Join" : [" ", [
+                        "Auth0 management Client ID for project",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                        "[replace w/ management client ID]",
+                    ]]
+                },
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -615,15 +635,22 @@
                 ]
             }
         },
-        "Auth0DeployClientSecret": {
+        "Auth0MGMTClientSecret": {
             "Type": "AWS::SecretsManager::Secret",
             "Properties": {
                 "Name" : {"Fn::Join" : [ "-", [
                     {"Ref" : "ProjectName" }, 
                     {"Ref" : "EnvironmentName" }, 
-                    "Auth0DeployClientSecret" 
+                    "Auth0-MGMT-ClientSecret" 
                 ]]},
-                "Description": "Auth0 Client Secret [replace w/ application secret]",
+                "Description": {"Fn::Join" : [" ", [
+                        "Auth0 management Client Secret for project",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                        "[replace w/ management client secret]",
+                    ]]
+                },
                 "GenerateSecretString": {},
                 "Tags": [
                     {"Key" : "ProjectName","Value" : {"Ref": "ProjectName"}},
@@ -632,10 +659,10 @@
                 ]
             }
         },
-        "Auth0DeployClientIDResourcePolicy": {
+        "Auth0MGMTClientIDResourcePolicy": {
             "Type": "AWS::SecretsManager::ResourcePolicy",
             "Properties": {
-                "SecretId": {"Ref": "Auth0DeployClientID"},
+                "SecretId": {"Ref": "Auth0MGMTClientID"},
                 "ResourcePolicy": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -651,10 +678,10 @@
                 }
             }
         },
-        "Auth0DeployClientSecretResourcePolicy": {
+        "Auth0MGMTClientSecretResourcePolicy": {
             "Type": "AWS::SecretsManager::ResourcePolicy",
             "Properties": {
-                "SecretId": {"Ref": "Auth0DeployClientSecret"},
+                "SecretId": {"Ref": "Auth0MGMTClientSecret"},
                 "ResourcePolicy": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -680,7 +707,13 @@
                 ]]},
                 "Type": "String",
                 "Value" : {"Ref" : "Auth0Domain"},
-                "Description": "Auth0 Domain",
+                "Description": {"Fn::Join" : [" ", [
+                        "Auth0 domain for project",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                    ]]
+                },                
                 "Tags": {
                     "EnvironmentName": {"Ref" : "EnvironmentName"},
                     "ProjectName": {"Ref" : "ProjectName"},
@@ -698,7 +731,13 @@
                 ]]},
                 "Type": "String",
                 "Value" : {"Fn::Join" : [ "", ["https://", {"Ref" : "Auth0Domain" }, "/api/v2/" ]]},
-                "Description": "Auth0 Domain",
+                "Description": {"Fn::Join" : [" ", [
+                        "Auth0 management API endpoint",
+                        {"Ref" : "ProjectName" }, 
+                        "-",
+                        {"Ref" : "EnvironmentName" }, 
+                    ]]
+                },
                 "Tags": {
                     "EnvironmentName": {"Ref" : "EnvironmentName"},
                     "ProjectName": {"Ref" : "ProjectName"},
@@ -752,12 +791,12 @@
             "Value" : { "Ref" : "Auth0AppClientSecret" },
             "Description" : "The ARN of the Secret containing the Auth0 App client secret"
         },
-        "Auth0DeployClientIDARN" : {
-            "Value" : { "Ref" : "Auth0DeployClientID" },
+        "Auth0MGMTClientIDARN" : {
+            "Value" : { "Ref" : "Auth0MGMTClientID" },
             "Description" : "The ARN of the Secret containing the Auth0 Deploy client ID"
         },
-        "Auth0DeployClientSecretARN" : {
-            "Value" : { "Ref" : "Auth0DeployClientSecret" },
+        "Auth0MGMTClientSecretARN" : {
+            "Value" : { "Ref" : "Auth0MGMTClientSecret" },
             "Description" : "The ARN of the Secret containing the Auth0 Deploy client secret"
         },
         "Auth0DomainParam" : {
