@@ -30,7 +30,7 @@ function export_env(){
     ## Auth0 paths
     ##
     export AUTH0_EXPORT_PATH={{ Auth0ExportPath }}
-    export AUTH0_DEPLOY_PATH={{ Auth0DeployPath }}
+    export AUTH0_DEPLOY_PATH={{ Auth0MGMTPath }}
     export AUTH0_TENANT_PATH={{ Auth0TenantPath }}
     export AUTH0_TENANT_YAML={{ Auth0TenantYAML }}
 
@@ -51,8 +51,8 @@ function export_env(){
     ## Cloudformation outputs used to dynamically retrieve Auth0 
     ## data from cloud secrets management and parameter storage
     ##
-    export AUTH0_CLIENT_ID_OUTPUT="Auth0DeployClientIDARN"
-    export AUTH0_CLIENT_SECRET_OUTPUT="Auth0DeployClientSecretARN"
+    export AUTH0_CLIENT_ID_OUTPUT="Auth0MGMTClientIDARN"
+    export AUTH0_CLIENT_SECRET_OUTPUT="Auth0MGMTClientSecretARN"
     export AUTH0_DOMAIN_PARAM_OUTPUT="Auth0DomainParam"
     export AUTH0_MGMT_API_ENDPOINT_OUTPUT="Auth0MgmtAPIEndpointParam"
 
