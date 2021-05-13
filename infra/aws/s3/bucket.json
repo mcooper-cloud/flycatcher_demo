@@ -55,11 +55,25 @@
                 "Enabled"
             ]
         },
-        "EnableEncryption" : {
+        "EnableEncryptionFlag" : {
             "Fn::Not": [{ "Fn::Equals": [
                 {"Ref": "KMSKeyARN"},
                 "NO_VALUE"
             ]}]
+        },
+        "KMSKeyFlag" : {
+            "Fn::Not": [{ "Fn::Equals": [
+                {"Ref": "KMSKeyARN"},
+                ""
+            ]}]
+        },
+        "EnableEncryption" : {
+            "Fn::Not": [{
+                "Fn::Or" : [
+                    {"Condition" : "EnableEncryptionFlag"},
+                    {"Condition" : "KMSKeyFlag"}
+                ]
+            }]
         }
     },
     "Resources": {
