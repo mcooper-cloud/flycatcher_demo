@@ -52,8 +52,8 @@
         "ParameterValue" : "{{ CodeBuildTimeout }}"
     },
     {
-        "ParameterKey" : "CodeBuildType",
-        "ParameterValue" : "{{ CodeBuildType }}"
+        "ParameterKey" : "CodeBuildSourceType",
+        "ParameterValue" : "{{ CodeBuildSourceType }}"
     },
     {
         "ParameterKey" : "RepoName",
